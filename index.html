@@ -11,33 +11,26 @@
       <h1>Renderer</h1>
     </header>
     <main>
-      <section class="bag">
-        <nav id="player" data-frames="10000" data-resolution="200">
-          <a id="play" href="#"><i class="icon-play icon-fixed-width"></i></a>
-          <div id="seeker">
-            <div id="loaded"></div>
-            <div id="current"></div>
+      <section class="player bag" data-frames="10000" data-resolution="200">
+        <nav class="controls">
+          <a class="play" href="#"><i class="icon-play icon-fixed-width"></i></a>
+          <div class="seeker">
+            <div class="loaded"></div>
+            <div class="current"></div>
           </div>
-          <span id="frameinfo">00:00:000</span>
+          <span class="frameinfo">00:00:000</span>
         </nav>
-        <ul id="channels">
-          <li data-channel="/mocap/vicon"><input type="checkbox" checked /><span class="name">/mocap/vicon</span></li>
-          <li data-channel="/haptic"><input type="checkbox" /><span class="name">/haptic</span></li>
-        </ul>
-        <div data-channel="/mocap/vicon">
-          <canvas tabindex="0">HTML5 Canvas &amp; WebGL support required.</canvas>
-        </div>
-        <div data-channel="/haptic">
-          
-        </div>
-    </main>
+        <section class="visualizations">
+        </section>
       </section>
-      <footer>
+    </main>
+    <footer>
       Footertext
     </footer>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js"></script>
     <script type="text/javascript" src="OrbitControls.js"></script>
     <script type="text/javascript" src="renderer.js"></script>
+    <script type="text/javascript" src="GL3DVisualizer.js"></script>
   </body>
 </html>
