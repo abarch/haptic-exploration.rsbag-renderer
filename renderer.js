@@ -210,9 +210,11 @@ var renderer = null;
 $(function(){
     renderer = new Renderer($(".player").first());
 
-    renderer.loadVisualizer('return "GL3DVisualizer";', '<canvas tabindex="0">HTML5 Canvas &amp; WebGL support required.</canvas>');
+    renderer.loadVisualizer('return "GL3DVisualizer";',
+                            '<canvas></canvas>',
+                            '');
 
-    // // Load proper frame data
+    // Load proper frame data
     renderer.log("Loading testdata...");
     jQuery.getJSON("testdata.json", function(data){
         renderer.addFrameData(data);
