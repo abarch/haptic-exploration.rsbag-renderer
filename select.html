@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Select</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
+  </head>
+  <body>
+    <header>
+      <h1>Select</h1>
+    </header>
+    <main class="select">
+      <ul class="sources">
+        <li>
+          <form class="source" action="render.html" method="GET" data-source-type="file" data-source-identifier="foo.tide">
+            <header>
+              <h2><span class="type">file</span>: <span class="identifier">foo.tide</span></h2>
+            </header>
+            <section class="channels">
+              <ul>
+                <li class="channel" data-type="rst.devices.mocap.Vicon" data-channel="/vicon/data">
+                  <span class="checkbox"><input type="checkbox" name="channels[]" value="/vicon/data" id="/vicon/data"><label for="/vicon/data"></label></span>
+                  <label class="channel-name">/vicon/data</label>
+                </li>
+                <li class="channel" data-type="rst.devices.Haptic" data-channel="/haptic/data">
+                  <span class="checkbox"><input type="checkbox" name="channels[]" value="/haptic/data" id="/haptic/data"><label for="/haptic/data"></label></span>
+                  <label class="channel-name">/haptic/data</label>
+                </li>
+              </ul>
+            </section>
+            <footer class="renderer-options">
+              <span class="renderer-transform">
+                <label>Transform: </label>
+                <span class="select"><select name="transform">
+                  <option>vicon/haptic-combined-3d</option>
+                  <option>direct</option>
+                </select></span>
+              </span>
+              <span class="renderer-visualizer"
+                <label>Visualizer: </label>
+                <span class="select"><select name="visualizer">
+                  <option>GL3DVisualizer</option>
+                </select></span>
+              </span>
+              <input type="submit" value="View"/>
+            </footer>
+          </form>
+        </li>
+      </ul>
+    </main>
+    <footer>
+      Footertext
+    </footer>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  </body>
+</html>
