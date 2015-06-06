@@ -13,7 +13,7 @@
     <main class="renderer">
       <section class="player bag" data-frames="10000" data-resolution="200">
         <nav class="controls">
-          <a class="play" href="#"><i class="icon-play icon-fixed-width"></i></a>
+          <a class="play"><i class="icon-play icon-fixed-width"></i></a>
           <div class="seeker">
             <div class="loaded"></div>
             <div class="current"></div>
@@ -40,6 +40,7 @@
           }
 
           // Manual loading by static resource addresses for now.
+          // this will be replaced by a single API call afterwards.
           var visualizerData = {};
           function insertData(name, type, data){
               var obj = visualizerData[name];
@@ -66,6 +67,7 @@
               loadVisualizerPart(name, "css");
           }
 
+          // Same goes for this.
           function loadSource(name){
               console.log("Loading source",name);
               jQuery.ajax({url: "/source/"+name+".json", dataType: "json"}).success(function(data){

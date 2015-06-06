@@ -2,7 +2,7 @@
        (front (hex FFFFFF))
        (border (hex 00A0DD))
        (dark (hex 021729))
-       (fore (hex 00AAEE)))
+       (fore (hex 88BBFF)))
   (html
    :background #(back)
    :font-family sans-serif
@@ -49,7 +49,7 @@
        :top 2px
        :z-index 1
        :left 2px
-       :background (hex DDDDDD))
+       :background (hex 555555))
       (input :visibility hidden)
       
       ((:and input :checked + label)
