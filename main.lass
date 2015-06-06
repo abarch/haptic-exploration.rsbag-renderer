@@ -19,8 +19,15 @@
      :max-width 1000px
      :margin 0 auto 0 auto
      :font-size 0
-     :position relative
-     (section.bag
+     :position relative)
+
+    (footer
+     :border-top 1px solid #(border)
+     :text-align center
+     :font-size 10pt)))
+
+  (main.renderer
+   (section.bag
       (.controls
        :display flex
        :align-content stretch
@@ -53,9 +60,4 @@
        :max-width 100%
        :min-height 800px
        :font-size 12pt
-       :background (hex CCC))))
-
-    (footer
-     :border-top 1px solid #(border)
-     :text-align center
-     :font-size 10pt))))
+       :background (hex CCC)))))
