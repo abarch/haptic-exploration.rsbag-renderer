@@ -178,6 +178,6 @@ GL3DVisualizer.prototype.makePoint = function(x, y, z, size, color){
     return mesh;
 }
 
-/*
- *  Public interface
- */
+GL3DVisualizer.prototype.name = "GL3DVisualizer";
+
+return GL3DVisualizer;
