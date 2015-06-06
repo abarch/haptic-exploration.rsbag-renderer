@@ -54,6 +54,10 @@ var Renderer = function(player, resolution, frames){
         var mins = Math.floor(seconds / 60);
         var text = pad(mins)+":"+pad(secs)+":"+pad(msecs,3);
         $(".frameinfo", self.player).text(text);
+
+        $.each(self.visualizers, function(i, visualizer){
+            visualizer.show(self.frames[self.frame]);
+        });
         return text;
     }
 
@@ -67,10 +71,6 @@ var Renderer = function(player, resolution, frames){
         if(data && newframe != self.frame){
             self.frame = newframe;
             self.updateDisplay();
-
-            $.each(self.visualizers, function(i, visualizer){
-                visualizer.show(data);
-            });
         }
         return self.frame;
     }
@@ -121,15 +121,29 @@ var Renderer = function(player, resolution, frames){
     }
 
     self.loadVisualizer = function(js, html, css){
-        var funct = new Function(js);
-        var name = funct();
+        // Inject CSS
         var style = $("<style type=\"text/css\" />").data("visualizer", name).html(css||"");
-        var html = $($.parseHTML(html)).data("visualizer",name);
-        
         $("head").append(style);
+        // Inject HTML
+        var html = $($.parseHTML(html)).data("visualizer",name);
         $(".visualizations",self.player).append(html);
-        self.visualizers[name] = new window[name]();
-        return self.visualizers[name];
+        // Create function object from raw text
+        var funct = new Function(js);
+        // Evaluate it to get the class prototype object
+        var prototype = funct();
+        // Instantiate it
+        var instance = new prototype();
+        // Retrieve the name
+        var name = instance.name;
+        // Register the instance
+        window[name] = prototype;
+        self.visualizers[name] = instance;
+        // Make sure our display is proper
+        if(0 < self.framesLoaded)
+            instance.show(self.frames[self.frame]);
+        // All done
+        self.log("Loaded visualizer",name,".");
+        return instance;
     }
 
     self.initUI = function(){
@@ -204,20 +218,3 @@ Renderer.prototype.allocateArray = function(length){
     }
     return array;
 }
-
-var renderer = null;
-
-$(function(){
-    renderer = new Renderer($(".player").first());
-
-    renderer.loadVisualizer('return "GL3DVisualizer";',
-                            '<canvas></canvas>',
-                            '');
-
-    // Load proper frame data
-    renderer.log("Loading testdata...");
-    jQuery.getJSON("testdata.json", function(data){
-        renderer.addFrameData(data);
-        renderer.log("Done loading.");
-    });
-})
