@@ -2,7 +2,11 @@
        (front (hex FFFFFF))
        (border (hex 00A0DD))
        (dark (hex 021729))
-       (fore (hex 88BBFF)))
+       (fore (hex 88BBFF))
+       (error (hex CC2222))
+       (footer (hex 111133)))
+  (.hidden :display none)
+  
   (html
    :background #(back)
    :font-family sans-serif
@@ -27,6 +31,22 @@
      :max-width 1000px
      :margin 0 auto 0 auto
      :position relative
+
+     (.component
+      :background #(front)
+      :margin 10px 0 0 0
+      :padding 5px
+      :border-radius 5px
+      
+      (header
+       :margin -5px -5px 0 -5px
+       (h2
+        :margin 0
+        :padding 0 0 0 10px)))
+
+     (.component.error
+      (header
+       :background #(error)))
 
      (.checkbox
       :display inline-block
@@ -72,6 +92,7 @@
        :font-size inherit
        :color inherit
        :cursor pointer
+       :width 150px
        (option
         :color inherit
         :background inherit)))
@@ -85,16 +106,13 @@
       :content "\"\\f0c9\""))
 
     (>footer
+     :color #(footer)
      :margin-top 50px
      :text-align center
      :font-size 10pt)))
 
   (main.renderer
    (section.bag
-    :background #(front)
-    :margin 10px 0 0 0
-    :padding 5px
-    :border-radius 5px
     (.controls
      :display flex
      :align-content stretch
@@ -118,7 +136,8 @@
        :background (hex AA0000))
       (.loaded
        :background (hex AAAAAA)))
-     (a
+     (.play
+      :text-align center
       :color black
       :text-decoration none)
      (.frameinfo
@@ -130,18 +149,7 @@
        :list-style none)
    (.sources
     (.source
-     :position relative
-     :border-radius 5px
-     :margin 10px 0 0 0
-     :padding 5px
-     :background #(front)
-
-     (header
-      :margin -5px -5px 0 -5px)
-
      (h2
-      :margin 0
-      :padding 0 0 0 10px
       (.type :text-transform capitalize
              :font-style italic)
       (.identifier
@@ -149,9 +157,7 @@
 
      (.channels
       (.channel
-       :font-size 14pt
-
-       ))
+       :font-size 14pt))
      
      (.renderer-options
       (input[type=submit]

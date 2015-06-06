@@ -99,13 +99,13 @@ var Renderer = function(player, resolution, frames){
         playing = val;
         if(val){
             self.log("Playing");
-            $(".play i", self.player).removeClass("icon-play").addClass("icon-pause");
+            $(".play i", self.player).removeClass("fa-play").addClass("fa-pause");
             if(self.frame == self.frames.length-1){
                 self.setFrame(0);
             }
         }else{
             self.log("Pausing");
-            $(".play i", self.player).addClass("icon-play").removeClass("icon-pause");
+            $(".play i", self.player).addClass("fa-play").removeClass("fa-pause");
         }
         return playing;
     }

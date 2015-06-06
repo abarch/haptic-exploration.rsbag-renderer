@@ -4,16 +4,19 @@
     <meta charset="utf-8"/>
     <title>Select</title>
     <link rel="stylesheet" type="text/css" href="main.css" />
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   </head>
   <body>
     <header>
       <h1>Select</h1>
     </header>
     <main class="select">
+      <div class="error component hidden">
+        <header><h2><i class="fa fa-exclamation-triangle"></i> Error</h2></header>
+      </div>
       <ul class="sources">
         <li>
-          <form class="source" action="render.html" method="GET" data-source-type="file" data-source-identifier="hand.tide">
+          <form class="source component" action="render.html" method="GET" data-source-type="file" data-source-identifier="hand.tide">
             <input type="hidden" name="source" value="hand.tide" />
             <header>
               <h2><span class="type">file</span>: <span class="identifier">hand.tide</span></h2>
