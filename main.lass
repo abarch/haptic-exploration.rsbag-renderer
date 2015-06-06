@@ -122,12 +122,7 @@
       :color black
       :text-decoration none)
      (.frameinfo
-      :font-family monospace))
-    (canvas
-     :max-width 100%
-     :min-height 800px
-     :font-size 12pt
-     :background (hex CCC))))
+      :font-family monospace))))
 
   (main.select
    (ul :margin 0
