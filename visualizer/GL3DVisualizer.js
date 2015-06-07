@@ -26,6 +26,7 @@ var GL3DVisualizer = function(html, FOV, NEAR, FAR){
             throw new Error("Illegal argument count");
         }
     }
+        
     self.addToScene = function(object, name){
         self.objects[name] = object;
         self.scene.add(object);
@@ -149,7 +150,7 @@ var GL3DVisualizer = function(html, FOV, NEAR, FAR){
     self.initUI();
     self.initScene();
     self.render();
-
+    
     return self;
 }
 
@@ -178,6 +179,9 @@ GL3DVisualizer.prototype.makePoint = function(x, y, z, size, color){
     return mesh;
 }
 
-GL3DVisualizer.prototype.name = "GL3DVisualizer";
+GL3DVisualizer.name = "GL3DVisualizer";
+
+GL3DVisualizer.dependencies = [{url: "https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js", dataType: "script", cache: true},
+                               {url: "/static/OrbitControls.js", dataType: "script", cache: true}];
 
 return GL3DVisualizer;
