@@ -1,4 +1,66 @@
 /*
+ * Resource loader stuff
+ */
+var ResourceLoader = function(){
+    var self = this;
+
+    self.ErrorReporter = function(status, task){
+        self.log("Error loading",task,":",status);
+    }
+
+    self.callIfDone = function(task){
+        var done = true;
+        $.each(task.urls, function(i, url){
+            if(task.data[i] === null){
+                done = false;
+            }
+        });
+        if(done){
+            task.success.apply(null, task.data);
+        }
+    }
+
+    self.schedule = function(task, url){
+        var i = task.urls.push(url)-1;
+        task.data[i] = null;
+        return jQuery.ajax(url).success(function(data){
+            if(!task.failed){
+                task.data[i] = data;
+                self.log("Completed loading",url);
+                self.callIfDone(task);
+            }
+        }).fail(function(xhr, status){
+            task.failed = true;
+            task.failure(status, task);
+        });
+    }
+
+    self.load = function(urls, success, failure){
+        var task = {
+            "success": success,
+            "failure": failure || self.ErrorReporter,
+            "urls": [],
+            "data": [],
+            "failed": false
+        };
+
+        $.each(urls, function(i, url){
+            self.log("Scheduling",url);
+            self.schedule(task, url);
+        });
+        return task;
+    }
+}
+
+ResourceLoader.prototype.log = function(message){
+    var args = $.extend([], arguments);
+    args.unshift("[ResourceLoader]");
+    console.log.apply(console, args);
+    return true;
+}
+
+
+/*
  * Visualizer superclass
  */
 var Visualizer = function(html){
@@ -124,27 +186,31 @@ var Renderer = function(player, resolution, frames){
         // Inject CSS
         var style = $("<style type=\"text/css\" />").data("visualizer", name).html(css||"");
         $("head").append(style);
+        
         // Inject HTML
         var html = $($.parseHTML(html)).data("visualizer",name);
-        var container = $("<div></div>").append(html);
+        var container = $('<div class="visualizer"></div>').append(html);
         $(".visualizations",self.player).append(container);
+        
         // Create function object from raw text
         var funct = new Function(js);
-        // Evaluate it to get the class prototype object
-        var prototype = funct(container);
-        // Instantiate it
-        var instance = new prototype();
-        // Retrieve the name
-        var name = instance.name;
-        // Register the instance
-        window[name] = prototype;
-        self.visualizers[name] = instance;
-        // Make sure our display is proper
-        if(0 < self.framesLoaded)
-            instance.show(self.frames[self.frame]);
-        // All done
-        self.log("Loaded visualizer",name,".");
-        return instance;
+        var prototype = funct();
+        window[prototype.name] = prototype;
+        
+        var initiator = function(){
+            var instance = new prototype(container);
+            self.visualizers[prototype.name] = instance;
+            if(0 < self.framesLoaded) instance.show(self.frames[self.frame]);
+            self.log("Loaded visualizer",prototype.name,".");
+        }
+
+        if(prototype.dependencies){
+            resourceLoader.load(prototype.dependencies, initiator);
+        }else{
+            initiator();
+        }
+
+        return prototype;
     }
 
     self.initUI = function(){

@@ -33,60 +33,34 @@
       Footertext
     </footer>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js"></script>
-    <script type="text/javascript" src="OrbitControls.js"></script>
     <script type="text/javascript" src="Renderer.js"></script>
     <script type="text/javascript">
       var renderer = null;
+      var resourceLoader = null;
 
       $(function(){
           function urlParameter(name) {
               return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
           }
-
-          // Manual loading by static resource addresses for now.
-          // this will be replaced by a single API call afterwards.
-          var visualizerData = {};
-          function insertData(name, type, data){
-              var obj = visualizerData[name];
-              obj[type] = data;
-              
-              if(obj.js && obj.html && obj.css){
-                  renderer.loadVisualizer(obj.js,obj.html,obj.css);
-              }
-          }
-          
-          function loadVisualizerPart(name, type){
-              jQuery.ajax({url: "visualizer/"+name+"."+type, dataType: "text"}).success(function(data){
-                  insertData(name, type, data);
-              }).fail(function(xhr, status){
-                  console.log("Failure to load ",type,"of",name,":",status);
-              });
-          }
-
-          function loadVisualizer(name){
-              console.log("Loading visualizer",name);
-              visualizerData[name] = {};
-              loadVisualizerPart(name, "js");
-              loadVisualizerPart(name, "html");
-              loadVisualizerPart(name, "css");
-          }
-
-          // Same goes for this.
-          function loadSource(name){
-              console.log("Loading source",name);
-              jQuery.ajax({url: "/source/"+name+".json", dataType: "json"}).success(function(data){
-                  renderer.addFrameData(data);
-                  console.log("Loaded source",name);
-              }).fail(function(xhr, status){
-                  console.log("Failure to load source",name,":",status);
-              });
-          }
           
           renderer = new Renderer($(".player").first());
+          resourceLoader = new ResourceLoader();
           
-          loadVisualizer(urlParameter("visualizer"));
-          loadSource(urlParameter("source"));
+          function visualizerResource(name, type){
+              return {url: "/visualizer/"+name+"."+type, dataType: "text", cache: true};
+          }
+
+          function sourceResource(name){
+              return {url: "/source/"+name+".json", dataType: "json", cache: true};
+          }
+          
+          var visualizer = urlParameter("visualizer");
+          resourceLoader.load([visualizerResource(visualizer,"js"),
+                               visualizerResource(visualizer,"html"),
+                               visualizerResource(visualizer,"css")], renderer.loadVisualizer);
+
+          var source = urlParameter("source");
+          resourceLoader.load([sourceResource(source)], renderer.addFrameData);
       })
     </script>
   </body>
