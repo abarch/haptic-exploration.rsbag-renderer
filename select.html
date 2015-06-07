@@ -9,6 +9,11 @@
   <body>
     <header>
       <h1>Select</h1>
+      <nav>
+        <a href="select.html" title="Home"><i class="fa fa-home"></i></a>
+        <a href="admin.html" title="Administration"><i class="fa fa-wrench"></i></a>
+        <a href="/api/shutdown" title="Shut down"><i class="fa fa-power-off"></i></a>
+      </nav>
     </header>
     <main class="select">
       <div class="error component hidden">
@@ -24,11 +29,11 @@
             <section class="channels">
               <ul>
                 <li class="channel" data-type="rst.devices.mocap.Vicon" data-channel="/vicon/data">
-                  <span class="checkbox"><input type="checkbox" name="channels[]" value="/vicon/data" id="/vicon/data"><label for="/vicon/data"></label></span>
+                  <span class="checkbox"><input type="checkbox" name="channels[]" value="/vicon/data" id="/vicon/data" checked><label for="/vicon/data"></label></span>
                   <label class="channel-name">/vicon/data</label>
                 </li>
                 <li class="channel" data-type="rst.devices.Haptic" data-channel="/haptic/data">
-                  <span class="checkbox"><input type="checkbox" name="channels[]" value="/haptic/data" id="/haptic/data"><label for="/haptic/data"></label></span>
+                  <span class="checkbox"><input type="checkbox" name="channels[]" value="/haptic/data" id="/haptic/data" checked><label for="/haptic/data"></label></span>
                   <label class="channel-name">/haptic/data</label>
                 </li>
               </ul>
@@ -37,7 +42,7 @@
               <span class="renderer-transform">
                 <label>Transform: </label>
                 <span class="select"><select name="transform">
-                  <option>vicon/haptic-combined-3d</option>
+                  <option>handcapture-3d</option>
                   <option>direct</option>
                 </select></span>
               </span>
