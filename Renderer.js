@@ -126,11 +126,12 @@ var Renderer = function(player, resolution, frames){
         $("head").append(style);
         // Inject HTML
         var html = $($.parseHTML(html)).data("visualizer",name);
-        $(".visualizations",self.player).append(html);
+        var container = $("<div></div>").append(html);
+        $(".visualizations",self.player).append(container);
         // Create function object from raw text
         var funct = new Function(js);
         // Evaluate it to get the class prototype object
-        var prototype = funct();
+        var prototype = funct(container);
         // Instantiate it
         var instance = new prototype();
         // Retrieve the name
