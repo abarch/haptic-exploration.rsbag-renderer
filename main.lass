@@ -50,6 +50,8 @@
       :border-radius 5px
       
       (header
+       :display flex
+       :align-items center
        :margin -5px -5px 0 -5px
        (h2
         :margin 0
@@ -114,7 +116,18 @@
       :right 4px
       :top 4px
       :font-family FontAwesome
-      :content "\"\\f0c9\""))
+      :content "\"\\f0c9\"")
+     
+     (input[type=submit]
+       :padding 2px
+       :background #(fore)
+       :border none
+       :font-weight bold
+       :color (hex FFFFFF)
+       :font-size 10pt
+       :cursor pointer)
+     ((:and input[type=submit] :hover)
+      :background #(border)))
 
     (>footer
      :color #(footer)
@@ -160,26 +173,55 @@
        :list-style none)
    (.sources
     (.source
-     (h2
-      (.type :text-transform capitalize
-             :font-style italic)
-      (.identifier
-       :color #(fore)))
+     (header
+      (h2
+       (.type :text-transform capitalize
+              :font-style italic)
+       (.identifier
+        :color #(fore)))
+      (.description
+       :float right
+       :text-align right
+       :flex-grow 1
+       :font-weight normal
+       :font-size 12pt))
 
      (.channels
       (.channel
-       :font-size 14pt))
+       :display flex
+       :align-items center
+       :font-size 14pt
+       (.channel-length
+        :text-align right
+        :flex-grow 1
+        :float right
+        :font-size 12pt)
+       ((:and .channel-length :after)
+        :content "' events'")))
      
      (.renderer-options
       (input[type=submit]
        :position absolute
-       :bottom 0
-       :right 0
+       :bottom 0 :right 0
        :padding 5px
-       :background #(fore)
-       :border none
-       :border-radius 0 0 5px 0
-       :font-weight bold
-       :color (hex FFFFFF)
-       :font-size 10pt
-       :cursor pointer))))))
+       :border-radius 0 0 5px 0)))))
+
+  (main.admin
+   (.listing
+    (ul
+     :list-style none
+     :margin 0 :padding 0
+     (li
+      :font-size 14pt
+      :display flex
+      :align-items center
+      ((:or .type .identifier .name)
+       :padding 2px)
+      
+      (.name
+       :min-width 200px)
+      (.description
+       :display inline-block
+       :flex-grow 1
+       :font-size 12pt)
+      (.actions ))))))
