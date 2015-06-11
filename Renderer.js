@@ -1,10 +1,28 @@
 /*
+ * Global funcs
+ */
+var error = function(){
+    var args = Array.prototype.slice.call(arguments).map(function(arg){
+        if(typeof arg === 'object'){
+            return JSON.stringify(arg);
+        }else{
+            return arg;
+        }
+    });
+    var message = args.join(" ");
+    $("main>.error").removeClass("hidden")
+        .append("<span>"+message+"</span>");
+    return message;
+}
+
+/*
  * Resource loader stuff
  */
 var ResourceLoader = function(){
     var self = this;
 
     self.ErrorReporter = function(status, task){
+        error("Error loading",task,":",status);
         self.log("Error loading",task,":",status);
     }
 
