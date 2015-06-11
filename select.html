@@ -17,24 +17,32 @@
     </header>
     <main class="select">
       <div class="error component hidden">
-        <header><h2><i class="fa fa-exclamation-triangle"></i> Error</h2></header>
+        <header>
+          <h2><i class="fa fa-exclamation-triangle"></i> Error</h2>
+        </header>
       </div>
       <ul class="sources">
         <li>
           <form class="source component" action="render.html" method="GET" data-source-type="file" data-source-identifier="hand.tide">
             <input type="hidden" name="source" value="hand.tide" />
             <header>
-              <h2><span class="type">file</span>: <span class="identifier">hand.tide</span></h2>
+              <h2>
+                <span class="type">file</span>:
+                <span class="identifier">hand.tide</span>
+              </h2>
+              <span class="description">Some description maybe</span>
             </header>
             <section class="channels">
               <ul>
                 <li class="channel" data-type="rst.devices.mocap.Vicon" data-channel="/vicon/data">
                   <span class="checkbox"><input type="checkbox" name="channels[]" value="/vicon/data" id="/vicon/data" checked><label for="/vicon/data"></label></span>
                   <label class="channel-name">/vicon/data</label>
+                  <span class="channel-length">10000</span>
                 </li>
                 <li class="channel" data-type="rst.devices.Haptic" data-channel="/haptic/data">
                   <span class="checkbox"><input type="checkbox" name="channels[]" value="/haptic/data" id="/haptic/data" checked><label for="/haptic/data"></label></span>
                   <label class="channel-name">/haptic/data</label>
+                  <span class="channel-length">10000</span>
                 </li>
               </ul>
             </section>
