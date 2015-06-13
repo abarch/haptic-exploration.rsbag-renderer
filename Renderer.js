@@ -133,6 +133,7 @@ var Renderer = function(player, resolution, frames){
     self.resolution = actualResolution;
     self.speed = 1;
     self.frame = 0;
+    self.accurateFrame = 0;
     self.frames = self.allocateArray(actualFrames);
     self.framesLoaded = 0;
     self.visualizers = {};
@@ -167,8 +168,13 @@ var Renderer = function(player, resolution, frames){
     }
 
     self.setFrame = function(newframe){
+        newframe = Math.floor(newframe);
         var data = self.frameData(newframe);
         if(data && newframe != self.frame){
+            // Check if frame is within range of accurate measurement
+            // if not, adjust our accurate measurement to the clamped one.
+            if(newframe != Math.floor(self.accurateFrame))
+                self.accurateFrame = newframe;
             self.frame = newframe;
             self.updateDisplay();
         }
@@ -307,11 +313,9 @@ var Renderer = function(player, resolution, frames){
             // Calculate next frame by approximating time distance
             // through previous time taken to render the frame.
             var frameDistance = (frameDuration/1000)*self.resolution*self.speed;
-            var newFrame = self.frame+Math.floor(frameDistance);
-            if(newFrame < self.framesLoaded){
-                self.setFrame(newFrame);
-            }else{
-                self.setFrame(self.framesLoaded-1);
+            self.accurateFrame += frameDistance;
+            self.setFrame(Math.min(self.framesLoaded-1,self.accurateFrame));
+            if(self.frame == self.framesLoaded-1){
                 self.setPlaying(false);
             }
         }
