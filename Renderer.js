@@ -299,6 +299,8 @@ var Renderer = function(player, resolution, frames){
                 isholding = false;   
                 self.setPlaying(wasplaying);
             }
+        }).resize(function(ev){
+            self.updateDisplay();
         });
         return true;
     }
