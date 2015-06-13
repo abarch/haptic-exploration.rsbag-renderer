@@ -114,6 +114,7 @@ var Renderer = function(player, resolution, frames){
     
     self.player = $(actualPlayer);
     self.resolution = actualResolution;
+    self.speed = 1;
     self.frame = 0;
     self.frames = self.allocateArray(actualFrames);
     self.framesLoaded = 0;
@@ -134,6 +135,8 @@ var Renderer = function(player, resolution, frames){
         var mins = Math.floor(seconds / 60);
         var text = pad(mins)+":"+pad(secs)+":"+pad(msecs,3);
         $(".frameinfo", self.player).text(text);
+
+        $(".speed", self.player).text(self.speed);
 
         $.each(self.visualizers, function(i, visualizer){
             visualizer.show(self.frames[self.frame]);
@@ -179,19 +182,29 @@ var Renderer = function(player, resolution, frames){
         playing = val;
         if(val){
             self.log("Playing");
-            $(".play i", self.player).removeClass("fa-play").addClass("fa-pause");
+            $(".play,.forward,.backward", self.player).addClass("hidden");
+            $(".pause,.faster,.slower", self.player).removeClass("hidden");
             if(self.frame == self.frames.length-1){
                 self.setFrame(0);
             }
         }else{
             self.log("Pausing");
-            $(".play i", self.player).addClass("fa-play").removeClass("fa-pause");
+            $(".play,.forward,.backward", self.player).removeClass("hidden");
+            $(".pause,.faster,.slower", self.player).addClass("hidden");
         }
         return playing;
     }
 
     self.isPlaying = function(){
         return playing;
+    }
+
+    self.setSpeed = function(speed){
+        if(speed != self.speed && 0 < speed){
+            self.speed = speed;
+            self.updateDisplay();
+        }
+        return self.speed;
     }
 
     self.seekerFrame = function(ev){
@@ -232,9 +245,15 @@ var Renderer = function(player, resolution, frames){
     }
 
     self.initUI = function(){
-        $(".play", self.player).click(function(){
-            self.setPlaying(!self.isPlaying());
-        });
+        $(".backward", self.player).click(function(){self.setFrame(self.frame-1);});        
+        $(".play", self.player).click(function(){self.setPlaying(true);});
+        $(".forward", self.player).click(function(){self.setFrame(self.frame+1);});
+        
+        $(".slower", self.player).click(function(){self.setSpeed(self.speed/2);});
+        $(".pause", self.player).click(function(){self.setPlaying(false);});
+        $(".faster", self.player).click(function(){self.setSpeed(self.speed*2);});
+
+        $(".reset-speed", self.player).dblclick(function(){self.setSpeed(1);});
         
         var wasplaying = false;
         var isholding = false;
@@ -269,7 +288,7 @@ var Renderer = function(player, resolution, frames){
         if(self.isPlaying() && self.frame<self.framesLoaded-1){
             // Calculate next frame by approximating time distance
             // through previous time taken to render the frame.
-            var frameDistance = (frameDuration/1000)*self.resolution;
+            var frameDistance = (frameDuration/1000)*self.resolution*self.speed;
             var newFrame = self.frame+Math.floor(frameDistance);
             if(newFrame < self.framesLoaded){
                 self.setFrame(newFrame);

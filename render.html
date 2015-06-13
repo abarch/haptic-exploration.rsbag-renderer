@@ -23,7 +23,13 @@
       </div>
       <section class="player bag component" data-frames="10000" data-resolution="200">
         <nav class="controls">
-          <a class="play"><i class="fa fa-play fa-fw"></i></a>
+          <a class="button slower hidden" title="Decrease playback speed"><i class="fa fa-backward fa-fw"></i></a>
+          <a class="button pause hidden" title="Pause playback"><i class="fa fa-pause fa-fw"></i></a>
+          <a class="button faster hidden" title="Increase playback speed"><i class="fa fa-forward fa-fw"></i></a>
+          <a class="button backward" title="Step a single frame backward"><i class="fa fa-step-backward fa-fw"></i></a>
+          <a class="button play" title="Start playback"><i class="fa fa-play fa-fw"></i></a>
+          <a class="button forward" title="Step a single frame forward"><i class="fa fa-step-forward fa-fw"></i></a>
+          <a class="button reset-speed" title="Current playback speed. Double click to reset."><span class="speed">1</span></a>
           <div class="seeker">
             <div class="loaded"></div>
             <div class="current"></div>
