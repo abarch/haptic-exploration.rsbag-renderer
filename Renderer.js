@@ -21,9 +21,9 @@ var error = function(){
 var ResourceLoader = function(){
     var self = this;
 
-    self.ErrorReporter = function(status, task){
-        error("Error loading",task,":",status);
-        self.log("Error loading",task,":",status);
+    self.ErrorReporter = function(xhr, status, error, task, i){
+        window.error("Error loading",task.failed.url,":",status,error);
+        self.log("Error loading",task.failed.url,":",status,error);
     }
 
     self.callIfDone = function(task){
@@ -39,33 +39,50 @@ var ResourceLoader = function(){
     }
 
     self.schedule = function(task, url){
+        self.log("Scheduling", url.url);
         var i = task.urls.push(url)-1;
         task.data[i] = null;
         return jQuery.ajax(url).success(function(data){
             if(!task.failed){
                 task.data[i] = data;
-                self.log("Completed loading",url);
+                self.log("Completed loading",url.url);
                 self.callIfDone(task);
             }
-        }).fail(function(xhr, status){
-            task.failed = true;
-            task.failure(status, task);
+        }).fail(function(xhr, status, error){
+            task.failed = url;
+            task.failure(xhr, status, error, task, i);
         });
     }
 
-    self.load = function(urls, success, failure){
-        var task = {
+    self.makeTask = function(success, failure){
+        return {
             "success": success,
             "failure": failure || self.ErrorReporter,
             "urls": [],
             "data": [],
             "failed": false
         };
+    }
+
+    self.load = function(urls, success, failure){
+        var task = self.makeTask(success, failure);
 
         $.each(urls, function(i, url){
-            self.log("Scheduling",url);
             self.schedule(task, url);
         });
+        return task;
+    }
+
+    self.loadSequentially = function(urls, success, failure){
+        var task = self.makeTask(success, failure);
+        $.each(urls, function(i, url){
+            if(0==i)return;
+            var prevTask = task;
+            task = self.makeTask(function(data){
+                self.schedule(prevTask, url);
+            });
+        });
+        self.schedule(task,urls[0]);
         return task;
     }
 }
@@ -213,30 +230,31 @@ var Renderer = function(player, resolution, frames){
         return Math.floor(x/seeker.width()*self.frames.length);
     }
 
-    self.loadVisualizer = function(js, html, css){
-        // Inject CSS
-        var style = $("<style type=\"text/css\" />").data("visualizer", name).html(css||"");
-        $("head").append(style);
-        
-        // Inject HTML
-        var html = $($.parseHTML(html)).data("visualizer",name);
-        var container = $('<div class="visualizer"></div>').append(html);
-        $(".visualizations",self.player).append(container);
-        
+    self.loadVisualizer = function(js, html, css){        
         // Create function object from raw text
         var funct = new Function(js);
         var prototype = funct();
-        window[prototype.name] = prototype;
+        var name = prototype.identifier;
+        window[name] = prototype;
         
         var initiator = function(){
             var instance = new prototype(container);
-            self.visualizers[prototype.name] = instance;
+            self.visualizers[name] = instance;
             if(0 < self.framesLoaded) instance.show(self.frames[self.frame]);
-            self.log("Loaded visualizer",prototype.name,".");
+            self.log("Loaded visualizer",name,".");
         }
+        
+        // Inject CSS
+        var style = $("<style type=\"text/css\" />").attr("data-visualizer", name).html(css||"");
+        $("head").append(style);
+        
+        // Inject HTML
+        var html = $($.parseHTML(html));
+        var container = $('<div class="visualizer"></div>').attr("data-visualizer",name).append(html);
+        $(".visualizations",self.player).append(container);
 
         if(prototype.dependencies){
-            resourceLoader.load(prototype.dependencies, initiator);
+            resourceLoader.loadSequentially(prototype.dependencies, initiator);
         }else{
             initiator();
         }
