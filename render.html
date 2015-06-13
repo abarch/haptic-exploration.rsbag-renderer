@@ -54,11 +54,23 @@
     <script type="text/javascript">
       var renderer = null;
       var resourceLoader = null;
-
+      
       $(function(){
-          function urlParameter(name) {
-              return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+          function getUrlParams(url){
+              url = url || document.location.href;
+              var re = /(?:\?|&(?:amp;)?)([^=&#]+)(?:=?([^&#]*))/g;
+              var decode = function(s){return decodeURIComponent(s.replace(/\+/g, " "));};
+              var params = {};
+              
+              while(match = re.exec(url)){
+                  var key = decode(match[1]);
+                  var val = decode(match[2]);
+                  if(typeof params[key] == 'undefined') params[key] = [val];
+                  else                                  params[key].push(val)
+              }
+              return params;
           }
+          var params = getUrlParams();
           
           renderer = new Renderer($(".player").first());
           resourceLoader = new ResourceLoader();
@@ -66,19 +78,21 @@
           function visualizerResource(name, type){
               return {url: "/visualizer/"+name+"."+type, dataType: "text", cache: true};
           }
-
+          
           function sourceResource(name){
               return {url: "/source/"+name+".json", dataType: "json", cache: true};
           }
           
-          var visualizer = urlParameter("visualizer");
-          resourceLoader.load([visualizerResource(visualizer,"js"),
-                               visualizerResource(visualizer,"html"),
-                               visualizerResource(visualizer,"css")], renderer.loadVisualizer);
-
-          var source = urlParameter("source");
-          resourceLoader.load([sourceResource(source)], renderer.addFrameData);
-      })
+          $.each(params["visualizer"], function(i,visualizer){
+              resourceLoader.load([visualizerResource(visualizer,"js"),
+                                   visualizerResource(visualizer,"html"),
+                                   visualizerResource(visualizer,"css")], renderer.loadVisualizer);
+          });
+          
+          $.each(params["source"], function(i,source){
+              resourceLoader.load([sourceResource(source)], renderer.addFrameData);
+          });
+      });
     </script>
   </body>
 </html>
