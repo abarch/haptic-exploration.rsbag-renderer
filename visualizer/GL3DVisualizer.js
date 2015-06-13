@@ -179,9 +179,8 @@ GL3DVisualizer.prototype.makePoint = function(x, y, z, size, color){
     return mesh;
 }
 
-GL3DVisualizer.name = "GL3DVisualizer";
-
-GL3DVisualizer.dependencies = [{url: "https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js", dataType: "script", cache: true},
-                               {url: "/static/OrbitControls.js", dataType: "script", cache: true}];
+GL3DVisualizer.identifier = "GL3DVisualizer";
+GL3DVisualizer.dependencies = [{url: "/static/three.min.js", dataType: "script", cache: false},
+                               {url: "/static/OrbitControls.min.js", dataType: "script", cache: false}];
 
 return GL3DVisualizer;
