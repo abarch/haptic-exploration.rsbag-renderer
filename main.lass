@@ -1,3 +1,4 @@
+(:import (url "/static/font-awesome.min.css"))
 (:let ((back (hex 042B4D))
        (front (hex FFFFFF))
        (border (hex 00A0DD))
