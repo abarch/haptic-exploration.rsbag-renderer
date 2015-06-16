@@ -184,7 +184,9 @@
       (.loaded
        :background (hex AAAAAA)))
      (.frameinfo
-      :font-family monospace))))
+      :font-size 10pt
+      :font-family monospace
+      (>* :display block)))))
 
   (main.select
    (ul :margin 0

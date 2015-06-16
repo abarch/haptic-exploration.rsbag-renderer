@@ -144,16 +144,23 @@ var Renderer = function(player, resolution, frames){
             count = (count || 2) - thing.length;
             return (count<0)? thing : new Array(count+1).join("0")+thing;
         }
+        var time = function(frame, resolution){
+            resolution = resolution || self.resolution;
+            var seconds = frame / resolution;
+            var msecs = frame % resolution / resolution * 1000;
+            var secs = Math.floor(seconds) % 60;
+            var mins = Math.floor(seconds / 60);
+            return pad(mins)+":"+pad(secs)+":"+pad(msecs,3);
+        }
         // Update frame info
-        var seconds = self.frame / self.resolution;
-        var msecs = self.frame % self.resolution / self.resolution * 1000;
-        var secs = Math.floor(seconds) % 60;
-        var mins = Math.floor(seconds / 60);
-        var text = pad(mins)+":"+pad(secs)+":"+pad(msecs,3);
-        $(".frameinfo", self.player).html(text+"<br/>"+pad(self.frame,9));
+        $(".frameinfo .maxtime", self.player).text(time(self.frames.length));
+        $(".frameinfo .maxframe", self.play).text(pad(self.frames.length,9));
+        $(".frameinfo .curtime", self.player).text(time(self.frame+1));
+        $(".frameinfo .curframe", self.play).text(pad(self.frame+1,9));
         // Show Speed
         $(".speed", self.player).text(self.speed);
-        // Calculate seeker next, since the previous might change the available width
+        // Calculate seeker
+        // We cannot do this earlier as the previous updates might change the available width.
         var displayUnit = $(".seeker", self.player).width()/self.frames.length;
         $(".seeker .loaded", self.player).width(self.framesLoaded*displayUnit+"px");
         $(".seeker .current", self.player).width(self.frame*displayUnit+"px");
@@ -161,7 +168,7 @@ var Renderer = function(player, resolution, frames){
         $.each(self.visualizers, function(i, visualizer){
             visualizer.show(self.frames[self.frame]);
         });
-        return text;
+        return null;
     }
 
     self.frameData = function(frame){
