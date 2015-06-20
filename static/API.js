@@ -93,4 +93,8 @@ var API = function(){
     defineApiFunc("source/channel/list", ["source"]);
     defineApiFunc("source/channel/event", ["source", "channel", "transform",
                                            "skip", "amount", "from", "to"]);
+
+    self.streamSource = function(apiargs, deposit){
+        
+    }
 }
