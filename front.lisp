@@ -5,20 +5,17 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (in-package #:rsbag-renderer)
 
-(defvar *template-dir* (asdf:system-relative-pathname :rsbag-renderer "template/"))
+(setf radiance:*config-path* (asdf:system-relative-pathname :rsbag-renderer "radiance.uc.lisp"))
+(radiance:remove-uri-dispatcher 'welcome)
 
-(defun template (name)
-  (merge-pathnames name *template-dir*))
+(define-page front #@"/" ()
+  (redirect "/select"))
 
-(defun process (template &rest args)
-  (plump:serialize
-   (apply #'clip:process (plump:parse (template template)) args)))
+(define-page select #@"/select" ()
+  (r-clip:process (template "select.ctml")))
 
-(hunchentoot:define-easy-handler (front :uri "/") ()
-  (process "select.ctml"))
+(define-page render #@"/render" ()
+  (r-clip:process (template "render.ctml")))
 
-(hunchentoot:define-easy-handler (admin :uri "/admin") ()
-  (process "admin.ctml"))
-
-(hunchentoot:define-easy-handler (render :uri "/render") ()
-  (process "render.ctml"))
+(define-page admin #@"/admin" ()
+  (r-clip:process (template "admin.ctml")))

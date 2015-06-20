@@ -16,5 +16,5 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   :components ((:file "package")
                (:file "front")
                (:file "api"))
-  :depends-on (:hunchentoot
-               :clip))
+  :depends-on (:radiance
+               :r-clip))
