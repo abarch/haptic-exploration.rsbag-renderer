@@ -5,4 +5,5 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (in-package #:rad-user)
 (define-module #:rsbag-renderer
-  (:use #:cl #:radiance))
+  (:use #:cl #:radiance)
+  (:domain ""))

@@ -11,11 +11,11 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (define-page front #@"/" ()
   (redirect "/select"))
 
-(define-page select #@"/select" ()
-  (r-clip:process (template "select.ctml")))
+(define-page select (#@"/select" 100) (:lquery (template "select.ctml"))
+  (r-clip:process T))
 
-(define-page render #@"/render" ()
-  (r-clip:process (template "render.ctml")))
+(define-page render #@"/render" (:lquery (template "render.ctml"))
+  (r-clip:process T))
 
-(define-page admin #@"/admin" ()
-  (r-clip:process (template "admin.ctml")))
+(define-page admin #@"/admin" (:lquery (template "admin.ctml"))
+  (r-clip:process T))

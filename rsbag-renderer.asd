@@ -17,4 +17,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
                (:file "front")
                (:file "api"))
   :depends-on (:radiance
+               :i-hunchentoot
+               :i-verbose
                :r-clip))
