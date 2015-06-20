@@ -98,3 +98,10 @@ Api.prototype.getUrlParams = function(url){
     }
     return params;
 }
+
+Api.prototype.log = function(message){
+    var args = $.extend([], arguments);
+    args.unshift("[Api]");
+    console.log.apply(console, args);
+    return true;
+}
