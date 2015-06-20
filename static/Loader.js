@@ -1,7 +1,7 @@
 /*
  * Resource class
  */
-var ResourceLoader = function(){
+var Loader = function(){
     var self = this;
 
     self.ErrorReporter = function(xhr, status, error, task, i){
@@ -70,9 +70,9 @@ var ResourceLoader = function(){
     }
 }
 
-ResourceLoader.prototype.log = function(message){
+Loader.prototype.log = function(message){
     var args = $.extend([], arguments);
-    args.unshift("[ResourceLoader]");
+    args.unshift("[Loader]");
     console.log.apply(console, args);
     return true;
 }
