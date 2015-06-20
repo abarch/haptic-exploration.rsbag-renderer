@@ -18,6 +18,7 @@ var Visualizer = function(html){
 
 /*
  * Main Renderer class
+ * Depends on: LOADER
  */
 var Renderer = function(player, resolution, frames){
     var self = this;
@@ -172,7 +173,7 @@ var Renderer = function(player, resolution, frames){
         $(".visualizations",self.player).append(container);
 
         if(prototype.dependencies){
-            resourceLoader.loadSequentially(prototype.dependencies, initiator);
+            LOADER.loadSequentially(prototype.dependencies, initiator);
         }else{
             initiator();
         }
