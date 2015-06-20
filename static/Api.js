@@ -18,24 +18,9 @@ var error = function(){
 /*
  * API class
  */
-var API = function(){
+var Api = function(){
     var self = this;
     
-    function getUrlParams(url){
-        url = url || document.location.href;
-        var re = /(?:\?|&(?:amp;)?)([^=&#]+)(?:=?([^&#]*))/g;
-        var decode = function(s){return decodeURIComponent(s.replace(/\+/g, " "));};
-        var params = {};
-        
-        while(match = re.exec(url)){
-            var key = decode(match[1]);
-            var val = decode(match[2]);
-            if(typeof params[key] == 'undefined') params[key] = [val];
-            else                                  params[key].push(val)
-        }
-        return params;
-    }
-
     var params = getUrlParams();
 
     self.params = function(name){return params[name];}
@@ -97,4 +82,19 @@ var API = function(){
     self.streamSource = function(apiargs, deposit){
         
     }
+}
+
+Api.prototype.getUrlParams = function(url){
+    url = url || document.location.href;
+    var re = /(?:\?|&(?:amp;)?)([^=&#]+)(?:=?([^&#]*))/g;
+    var decode = function(s){return decodeURIComponent(s.replace(/\+/g, " "));};
+    var params = {};
+    
+    while(match = re.exec(url)){
+        var key = decode(match[1]);
+        var val = decode(match[2]);
+        if(typeof params[key] == 'undefined') params[key] = [val];
+        else                                  params[key].push(val)
+    }
+    return params;
 }
