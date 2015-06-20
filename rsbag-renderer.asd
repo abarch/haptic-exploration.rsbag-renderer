@@ -4,7 +4,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 |#
 
 (in-package #:cl-user)
-(asdf:defsystem :rsbag-server
+(asdf:defsystem :rsbag-renderer
   :defsystem-depends-on (:radiance)
   :class "radiance:module"
   :version "0.0.1"
