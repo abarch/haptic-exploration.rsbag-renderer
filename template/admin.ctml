@@ -9,8 +9,8 @@
     <header>
       <h1>Administration</h1>
       <nav>
-        <a href="select.html" title="Home"><i class="fa fa-home"></i></a>
-        <a href="admin.html" title="Administration"><i class="fa fa-wrench"></i></a>
+        <a href="/select" title="Home"><i class="fa fa-home"></i></a>
+        <a href="/admin" title="Administration"><i class="fa fa-wrench"></i></a>
         <a href="/api/shutdown" title="Shut down"><i class="fa fa-power-off"></i></a>
       </nav>
     </header>
@@ -21,12 +21,12 @@
       
       <section class="component listing sources">
         <header><h2>Sources</h2></header>
-        <ul>
+        <ul each="sources">
           <li class="source">
-            <span class="name">hand.tide</span>
-            <span class="description">Some description maybe</span>
+            <span class="identifier" lquery="(text (identifier *))">IDENTIFIER</span>
+            <span class="description" lquery="(text (description *))">DESCRIPTION</span>
             <form class="actions" action="/api/source/remove" method="POST">
-              <input type="hidden" name="source" value="hand.tide" />
+              <input type="hidden" name="source" lquery="(val (identifier *))" value="" />
               <input type="submit" name="action" value="Remove" />
             </form>
           </li>
@@ -35,20 +35,12 @@
 
       <section class="component listing transforms">
         <header><h2>Transforms</h2></header>
-        <ul>
+        <ul each="transforms">
           <li class="transform">
-            <span class="name">handcapture-3d</span>
-            <span class="description">Transform for Vicon & Haptic hand recording data to GL3DVisualizer.</span>
+            <span class="identifier" lquery="(text (identifier *))">IDENTIFIER</span>
+            <span class="description" lquery="(text (description *))">DESCRIPTION</span>
             <form class="actions" action="/api/transform/remove" method="POST">
-              <input type="hidden" name="transform" value="handcapture-3d" />
-              <input type="submit" name="action" value="Remove" />
-            </form>
-          </li>
-          <li class="transform">
-            <span class="name">direct</span>
-            <span class="description">Directly transform each event into its JSON representation.</span>
-            <form class="actions" action="/api/transform/remove" method="POST">
-              <input type="hidden" name="transform" value="direct" />
+              <input type="hidden" name="transform" lquery="(val (identifier *))" value="" />
               <input type="submit" name="action" value="Remove" />
             </form>
           </li>
@@ -57,20 +49,12 @@
 
       <section class="component listing visualizations">
         <header><h2>Visualizations</h2></header>
-        <ul>
+        <ul each="visualizations">
           <li class="visualization">
-            <span class="name">GL3DVisualizer</span>
-            <span class="description">3D Visualization of point cloud data.</span>
+            <span class="identifier" lquery="(text (identifier *))">IDENTIFIER</span>
+            <span class="description" lquery="(text (description *))">DESCRIPTION</span>
             <form class="actions" action="/api/visualization/remove" method="POST">
-              <input type="hidden" name="visualization" value="GL3DVisualizer" />
-              <input type="submit" name="action" value="Remove" />
-            </form>
-          </li>
-          <li class="visualization">
-            <span class="name">PrintVisualizer</span>
-            <span class="description">Simply presents the data in JSON text format.</span>
-            <form class="actions" action="/api/visualization/remove" method="POST">
-              <input type="hidden" name="visualization" value="PrintVisualizer" />
+              <input type="hidden" name="visualization" lquery="(val (identifier *))" value="" />
               <input type="submit" name="action" value="Remove" />
             </form>
           </li>

@@ -9,8 +9,8 @@
     <header>
       <h1>Renderer</h1>
       <nav>
-        <a href="select.html" title="Home"><i class="fa fa-home"></i></a>
-        <a href="admin.html" title="Administration"><i class="fa fa-wrench"></i></a>
+        <a href="/select" title="Home"><i class="fa fa-home"></i></a>
+        <a href="/admin" title="Administration"><i class="fa fa-wrench"></i></a>
         <a href="/api/shutdown" title="Shut down"><i class="fa fa-power-off"></i></a>
       </nav>
     </header>
@@ -20,11 +20,11 @@
           <h2><i class="fa fa-exclamation-triangle"></i> Error</h2>
         </header>
       </div>
-      <section class="player bag component" data-frames="10000" data-resolution="200">
+      <section class="player bag component" lquery="(data :frames (channel-length source)) (data :resolution (resolution source))">
         <header>
           <h2>
-            <span class="type">file</span>:
-            <span class="identifier">hand.tide</span>
+            <span class="type" lquery="(text (type source))">TYPE</span>:
+            <span class="identifier" lquery="(text (identifier source))">IDENTIFIER</span>
           </h2>
           <span class="description">Some description maybe</span>
         </header>
@@ -57,48 +57,31 @@
       RSBag Visualizer 0.0.1
     </footer>
     <script type="text/javascript" src="/static/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="/static/Api.js"></script>
+    <script type="text/javascript" src="/static/Loader.js"></script>
     <script type="text/javascript" src="/static/Renderer.js"></script>
     <script type="text/javascript">
-      var renderer = null;
-      var resourceLoader = null;
+      var API = null;
+      var LOADER = null;
+      var RENDERER = null;
       
       $(function(){
-          function getUrlParams(url){
-              url = url || document.location.href;
-              var re = /(?:\?|&(?:amp;)?)([^=&#]+)(?:=?([^&#]*))/g;
-              var decode = function(s){return decodeURIComponent(s.replace(/\+/g, " "));};
-              var params = {};
-              
-              while(match = re.exec(url)){
-                  var key = decode(match[1]);
-                  var val = decode(match[2]);
-                  if(typeof params[key] == 'undefined') params[key] = [val];
-                  else                                  params[key].push(val)
-              }
-              return params;
-          }
-          var params = getUrlParams();
+          API = new Api();
+          LOADER = new Loader();
+          RENDERER = new Renderer($(".player").first());
           
-          renderer = new Renderer($(".player").first());
-          resourceLoader = new ResourceLoader();
-          
-          function visualizerResource(name, type){
-              return {url: "/visualizer/"+name+"."+type, dataType: "text", cache: true};
-          }
-          
-          function sourceResource(name){
-              return {url: "/source/"+name+".json", dataType: "json", cache: true};
-          }
-          
-          $.each(params["visualizer"], function(i,visualizer){
-              resourceLoader.load([visualizerResource(visualizer,"js"),
-                                   visualizerResource(visualizer,"html"),
-                                   visualizerResource(visualizer,"css")], renderer.loadVisualizer);
+          $.each(api.params("visualizer"), function(i,visualizer){
+              API.visualization({visualization: visualizer}, function(data){
+                  RENDERER.loadVisualizer(data.payload.js,
+                                          data.payload.html,
+                                          data.payload.css);
+              });
           });
-          
-          $.each(params["source"], function(i,source){
-              resourceLoader.load([sourceResource(source)], renderer.addFrameData);
-          });
+
+          API.streamSource({source: API.param("source"),
+                            channel: API.params("channel"),
+                            transform: API.param("transform")},
+                           RENDERER.addFrameData);
       });
     </script>
   </body>

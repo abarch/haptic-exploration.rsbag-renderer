@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Select</title>
+    <link rel="stylesheet" type="text/css" href="/static/main.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Select</h1>
+      <nav>
+        <a href="/select" title="Home"><i class="fa fa-home"></i></a>
+        <a href="/admin" title="Administration"><i class="fa fa-wrench"></i></a>
+        <a href="/api/shutdown" title="Shut down"><i class="fa fa-power-off"></i></a>
+      </nav>
+    </header>
+    <main class="select">
+      <div class="error component hidden">
+        <header>
+          <h2><i class="fa fa-exclamation-triangle"></i> Error</h2>
+        </header>
+      </div>
+      <ul class="sources" each="sources">
+        <li>
+          <form class="source component" action="/render" method="GET" lquery="(data :source-type (type *)) (data :source-identifier (identifier *))">
+            <input type="hidden" name="source" lquery="(val (identifier *))" value="" />
+            <header>
+              <h2>
+                <span class="type" lquery="(text (type *))">TYPE</span>:
+                <span class="identifier" lquery="(text (identifier *))">IDENTIFIER</span>
+              </h2>
+              <span class="description" lquery="(text (description *))">DESCRIPTION</span>
+            </header>
+            <section class="channels">
+              <ul each="(channels *)">
+                <li class="channel" lquery="(data :type (type *)) (data :channel (identifier *))">
+                  <span class="checkbox"><input type="checkbox" name="channels[]" lquery="(val (identifier *)) (attr :id (identifier *))" checked><label lquery="(attr :for (identifier *))"></label></span>
+                  <label class="channel-identifier" lquery="(text (identifier *))">IDENTIFIER</label>
+                  <span class="channel-length" lquery="(text (length *))">LENGTH</span>
+                </li>
+              </ul>
+            </section>
+            <footer class="renderer-options">
+              <span class="renderer-transform">
+                <label>Transform: </label>
+                <span class="select"><select name="transform" each="transforms">
+                  <option lquery="(text (identifier *))">IDENTIFIER</option>
+                </select></span>
+              </span>
+              <span class="renderer-visualizer"
+                <label>Visualizer: </label>
+                <span class="select"><select name="visualizer" each="visualizer">
+                  <option lquery="(text (identifier *))">IDENTIFIER</option>
+                </select></span>
+              </span>
+              <input type="submit" value="View"/>
+            </footer>
+          </form>
+        </li>
+      </ul>
+    </main>
+    <footer>
+      RSBag Visualizer 0.0.1
+    </footer>
+    <script type="text/javascript" src="/static/jquery-2.1.3.min.js"></script>
+  </body>
+</html>
