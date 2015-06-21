@@ -5,8 +5,11 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (in-package #:rsbag-renderer)
 
-(setf radiance:*config-path* (asdf:system-relative-pathname :rsbag-renderer "radiance.uc.lisp"))
-(radiance:remove-uri-dispatcher 'welcome)
-
 (defun start ()
-  (radiance:startup))
+  (start-listener 8080)
+  )
+
+(defun stop ()
+  (stop-listener 8080)
+  (dolist (source (list-sources))
+    (close-source source)))

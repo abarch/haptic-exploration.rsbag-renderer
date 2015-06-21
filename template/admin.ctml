@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>Administration</title>
-    <link rel="stylesheet" type="text/css" href="/static/rsbag-renderer/main.css" />
+    <link rel="stylesheet" type="text/css" href="/static/main.css" />
   </head>
   <body>
     <header>
@@ -64,6 +64,6 @@
     <footer>
       RSBag Visualizer 0.0.1
     </footer>
-    <script type="text/javascript" src="/static/rsbag-renderer/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-2.1.3.min.js"></script>
   </body>
 </html>

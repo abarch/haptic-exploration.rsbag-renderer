@@ -5,14 +5,14 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (in-package #:rsbag-renderer)
 
-(define-page front #@"/" ()
+(define-page front "/" ()
   (redirect "/select"))
 
-(define-page select (#@"/select" 100) (:lquery (template "select.ctml"))
-  (r-clip:process T))
+(define-page select "/select" ()
+  (clip:process (template "select.ctml")))
 
-(define-page render #@"/render" (:lquery (template "render.ctml"))
-  (r-clip:process T))
+(define-page render "/render" ()
+  (clip:process (template "render.ctml")))
 
-(define-page admin #@"/admin" (:lquery (template "admin.ctml"))
-  (r-clip:process T))
+(define-page admin "/admin" ()
+  (clip:process (template "admin.ctml")))

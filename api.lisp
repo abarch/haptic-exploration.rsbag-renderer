@@ -7,3 +7,4 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (define-api shutdown () ()
   (uiop:quit))
+
