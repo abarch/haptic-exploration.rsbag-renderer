@@ -6,5 +6,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (in-package #:rsbag-renderer)
 
 (define-api shutdown () ()
-  (uiop:quit))
+  (stop :quit T))
 
+(define-api coffee () ()
+  (with-json-output ()
+    (write-json "Hi!")))
