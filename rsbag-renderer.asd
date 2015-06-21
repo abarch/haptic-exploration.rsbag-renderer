@@ -13,6 +13,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   :serial T
   :components ((:file "package")
                (:file "toolkit")
+               (:file "json")
                (:file "server")
                (:file "source")
                (:file "front")
