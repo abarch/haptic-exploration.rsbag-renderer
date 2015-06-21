@@ -17,3 +17,11 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
     (close-source source))
   (when quit
     (uiop:quit)))
+
+(defun main (&rest args)
+  (declare (ignore args))
+  (start)
+  (dolist (arg (uiop:command-line-arguments))
+    (let ((file (uiop:parse-native-namestring arg)))
+      (when (string-equal (pathname-type file) "tide")
+        (open-source :file file)))))

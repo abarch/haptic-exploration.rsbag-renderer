@@ -30,4 +30,4 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
                :rsb-converter-protocol-buffer)
   :build-operation asdf:program-op
   :build-pathname "rsbag-renderer"
-  :entry-point "rsbag-renderer:start")
+  :entry-point "rsbag-renderer:main")
