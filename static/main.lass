@@ -226,10 +226,16 @@
       ((:or .type .identifier .name)
        :padding 2px)
       
-      (.name
-       :min-width 200px)
+      (.identifier
+       :white-space nowrap
+       :min-width -webkit-min-content
+       :min-width -moz-min-content
+       :min-width -min-content)
       (.description
        :display inline-block
        :flex-grow 1
        :font-size 12pt)
-      (.actions ))))))
+      (.actions
+       :min-width -webkit-min-content
+       :min-width -moz-min-content
+       :min-width -min-content))))))
