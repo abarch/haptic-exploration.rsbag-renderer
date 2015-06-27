@@ -9,7 +9,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (start-listener 8080)
   (dolist (file (uiop:directory-files (root-pathname "tide/") "*.tide"))
     (open-source :file file))
-  (dolist (file (uiop:directory-files (root-pathname "visualizers/") "*.tide"))
+  (dolist (file (uiop:directory-files (root-pathname "visualizers/") "*.js"))
     (load-visualizer file)))
 
 (defun stop (&key quit)
