@@ -54,7 +54,7 @@
       </section>
     </main>
     <footer>
-      RSBag Visualizer 0.0.1
+      RSBag Visualizer <splice lquery="(text (asdf:component-version (asdf:find-system :rsbag-renderer)))" />
     </footer>
     <script type="text/javascript" src="/static/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="/static/Api.js"></script>

@@ -5,7 +5,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (in-package #:cl-user)
 (asdf:defsystem :rsbag-renderer
-  :version "0.0.1"
+  :version "0.1.0"
   :license "LGPL2.1"
   :author "Nicolas Hafner <shinmera@tymoon.eu>"
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
