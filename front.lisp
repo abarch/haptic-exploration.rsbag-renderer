@@ -9,7 +9,9 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (redirect "/select"))
 
 (define-page select "/select" ()
-  (clip:process (template "select.ctml")))
+  (clip:process (template "select.ctml")
+                :sources (list-sources)
+                :transforms (list-transforms)))
 
 (define-page render "/render" ()
   (clip:process (template "render.ctml")))
