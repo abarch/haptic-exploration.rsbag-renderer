@@ -49,7 +49,7 @@
               </span>
               <span class="renderer-visualizer">
                 <label>Visualizer: </label>
-                <span class="select"><select name="visualizer" iterate="(** :visualizer)">
+                <span class="select"><select name="visualizer" iterate="(** :visualizers)">
                   <option lquery="(text (identifier *))">IDENTIFIER</option>
                 </select></span>
               </span>
