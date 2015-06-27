@@ -16,9 +16,14 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
                (:file "json")
                (:file "server")
                (:file "source")
+               (:file "transform")
                (:file "front")
                (:file "api")
-               (:file "config"))
+               (:file "config")
+               (:module "sources"
+                :components ((:file "file")))
+               (:module "transforms"
+                :components ((:file "haptic-vicon-3d"))))
   :depends-on (:hunchentoot
                :cl-ppcre
                :dissect
@@ -26,6 +31,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
                :clip
                :cl-rsbag
                :cl-rsb-common
+               :form-fiddle
                :rsbag-tidelog
                :rsb-converter-protocol-buffer)
   :build-operation asdf:program-op
