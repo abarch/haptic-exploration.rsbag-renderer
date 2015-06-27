@@ -7,6 +7,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (in-package #:rsbag-renderer)
 
 (defvar *debugger* NIL)
+(defvar *root* NIL)
 
 (defmacro define-storage (basename &optional (test ''equal))
   (let ((var (intern (format NIL "*~a*" basename)))
@@ -31,9 +32,23 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
        
        (values ',fun ',rem ',lis ',var))))
 
+(defun root-pathname (pathname)
+  (merge-pathnames
+   pathname
+   (or *root*
+       (setf *root*
+             (or
+              (when (uiop:directory-exists-p (merge-pathnames "visualizers/"))
+                *default-pathname-defaults*)
+              (uiop:directory-exists-p (asdf:system-source-directory :rsbag-renderer))
+              (restart-case (error "Unable to discover self!")
+                (set-root (root)
+                  :interactive read
+                  :report "Set a new root explicitly."
+                  root)))))))
+
 (defun resource (path &optional error-p)
-  (or (probe-file (merge-pathnames path))
-      (probe-file (asdf:system-relative-pathname :rsbag-renderer path))
+  (or (probe-file (root-pathname path))
       (and error-p (error "Could not find resource ~s" path))))
 
 (defun template (path &optional (error-p T))
