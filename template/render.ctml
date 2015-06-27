@@ -15,7 +15,7 @@
       </nav>
     </header>
     <main class="renderer">
-      <div class="error component hidden">
+      <div class="error component" lquery='(add-class (unless error "hidden")) (append error)'>
         <header>
           <h2><i class="fa fa-exclamation-triangle"></i> Error</h2>
         </header>

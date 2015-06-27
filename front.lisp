@@ -19,8 +19,10 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
            :visualizers (list-visualizers)))
 
 (define-page render "/render" ()
-  (process "render.ctml"
-           :source (source (post/get "source"))))
+  (let ((source (source (post/get "source"))))
+    (process "render.ctml"
+             :source source
+             :error (unless source "No such source found!"))))
 
 (define-page admin "/admin" ()
   (process "admin.ctml"
