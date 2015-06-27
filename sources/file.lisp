@@ -55,8 +55,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (rsbag:channel-bag channel))
 
 (defmethod duration ((channel file-channel))
-  (- (local-time:timestamp-to-universal (event channel (1- (length channel))))
-     (local-time:timestamp-to-universal (event channel 0))))
+  (- (local-time:timestamp-to-universal (timestamp (event channel (1- (length channel)))))
+     (local-time:timestamp-to-universal (timestamp (event channel 0)))))
 
 (defmethod resolution ((channel file-channel))
   (/ (channel-length channel)
@@ -74,8 +74,11 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defmethod id ((event file-event))
   (rsb:event-sequence-number (event-event event)))
 
+(defmethod timestamp ((event rsb:event))
+  (getf (rsb:event-timestamps event) :create))
+
 (defmethod timestamp ((event file-event))
-  (getf (rsb:event-timestamps (event-event event)) :create))
+  (timestamp (event-event event)))
 
 (defun name-schema (name)
   (let ((pos (position #\: name)))
