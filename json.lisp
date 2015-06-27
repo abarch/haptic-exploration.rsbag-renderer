@@ -30,7 +30,12 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defun write-json (object &optional (dest *json-output*))
   (typecase object
     (string (prin1 object dest))
-    (list (format NIL "[~{~s~^,~}]" object))
+    (list (with-json-array (dest)
+            (loop for i in object
+                  do (entry i))))
+    (vector (with-json-array (dest)
+              (loop for i across object
+                    do (entry i))))
     (T (princ object dest))))
 
 (defmacro with-delimiters ((destination left right) &body body)
