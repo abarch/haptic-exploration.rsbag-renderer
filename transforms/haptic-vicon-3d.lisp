@@ -5,6 +5,10 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (in-package #:rsbag-renderer)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (rsbag-helper:load-proto-file (asdf:system-relative-pathname :rsbag-renderer "proto/Vicon.proto"))
+  (rsbag-helper:load-proto-file (asdf:system-relative-pathname :rsbag-renderer "proto/Haptic.proto")))
+
 (defparameter *vicon-haptic-map*
   (let ((map (make-hash-table :test 'equalp)))
     (loop for (k v) in '(("subject-4-baby-1" 7)

@@ -33,7 +33,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
                :cl-rsb-common
                :form-fiddle
                :rsbag-tidelog
-               :rsb-converter-protocol-buffer)
+               :rsb-converter-protocol-buffer
+               :rsbag-helper)
   :build-operation asdf:program-op
   :build-pathname "rsbag-renderer"
   :entry-point "rsbag-renderer:main")

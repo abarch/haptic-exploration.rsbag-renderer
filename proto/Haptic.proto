@@ -1,0 +1,7 @@
+package rst.devices.haptic;
+
+option java_outer_classname = "HapticType";
+
+message Haptic {
+    repeated uint32 channels = 1;
+}
