@@ -15,10 +15,14 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (define-page select "/select" ()
   (process "select.ctml"
            :sources (list-sources)
-           :transforms (list-transforms)))
+           :transforms (list-transforms)
+           :visualizers (list-visualizers)))
 
 (define-page render "/render" ()
   (process "render.ctml"))
 
 (define-page admin "/admin" ()
-  (process "admin.ctml"))
+  (process "admin.ctml"
+           :sources (list-sources)
+           :transforms (list-transforms)
+           :visualizers (list-visualizers)))
