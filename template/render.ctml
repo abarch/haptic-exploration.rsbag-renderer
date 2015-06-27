@@ -20,38 +20,40 @@
           <h2><i class="fa fa-exclamation-triangle"></i> Error</h2>
         </header>
       </div>
-      <section class="player bag component" lquery="(data :frames (channel-length source)) (data :resolution (resolution source))">
-        <header>
-          <h2>
-            <span class="type" lquery="(text (source-type source))">TYPE</span>:
-            <span class="identifier" lquery="(text (identifier source))">IDENTIFIER</span>
-          </h2>
-          <span class="description">Some description maybe</span>
-        </header>
-        <nav class="controls">
-          <a class="button slower hidden" title="Decrease playback speed"><i class="fa fa-backward fa-fw"></i></a>
-          <a class="button pause hidden" title="Pause playback"><i class="fa fa-pause fa-fw"></i></a>
-          <a class="button faster hidden" title="Increase playback speed"><i class="fa fa-forward fa-fw"></i></a>
-          <a class="button backward" title="Step a single frame backward"><i class="fa fa-step-backward fa-fw"></i></a>
-          <a class="button play" title="Start playback"><i class="fa fa-play fa-fw"></i></a>
-          <a class="button forward" title="Step a single frame forward"><i class="fa fa-step-forward fa-fw"></i></a>
-          <a class="button reset-speed" title="Current playback speed. Double click to reset."><span class="speed">1</span></a>
-          <span class="frameinfo">
-            <span class="curtime">00:00:000</span>
-            <span class="curframe">000000000</span>
-          </span>
-          <div class="seeker">
-            <div class="loaded"></div>
-            <div class="current"></div>
-          </div>
-          <span class="frameinfo">
-            <span class="maxtime">00:00:000</span>
-            <span class="maxframe">000000000</span>
-          </span>
-        </nav>
-        <section class="visualizations">
+      <c:when test="source">
+        <section class="player bag component" lquery="(data :frames (channel-length source)) (data :resolution (resolution source))">
+          <header>
+            <h2>
+              <span class="type" lquery="(text (source-type source))">TYPE</span>:
+              <span class="identifier" lquery="(text (identifier source))">IDENTIFIER</span>
+            </h2>
+            <span class="description">Some description maybe</span>
+          </header>
+          <nav class="controls">
+            <a class="button slower hidden" title="Decrease playback speed"><i class="fa fa-backward fa-fw"></i></a>
+            <a class="button pause hidden" title="Pause playback"><i class="fa fa-pause fa-fw"></i></a>
+            <a class="button faster hidden" title="Increase playback speed"><i class="fa fa-forward fa-fw"></i></a>
+            <a class="button backward" title="Step a single frame backward"><i class="fa fa-step-backward fa-fw"></i></a>
+            <a class="button play" title="Start playback"><i class="fa fa-play fa-fw"></i></a>
+            <a class="button forward" title="Step a single frame forward"><i class="fa fa-step-forward fa-fw"></i></a>
+            <a class="button reset-speed" title="Current playback speed. Double click to reset."><span class="speed">1</span></a>
+            <span class="frameinfo">
+              <span class="curtime">00:00:000</span>
+              <span class="curframe">000000000</span>
+            </span>
+            <div class="seeker">
+              <div class="loaded"></div>
+              <div class="current"></div>
+            </div>
+            <span class="frameinfo">
+              <span class="maxtime">00:00:000</span>
+              <span class="maxframe">000000000</span>
+            </span>
+          </nav>
+          <section class="visualizations">
+          </section>
         </section>
-      </section>
+      </c:when>
     </main>
     <footer>
       RSBag Visualizer <splice lquery="(text (asdf:component-version (asdf:find-system :rsbag-renderer)))" />
