@@ -19,7 +19,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
            :visualizers (list-visualizers)))
 
 (define-page render "/render" ()
-  (process "render.ctml"))
+  (process "render.ctml"
+           :source (source (post/get "source"))))
 
 (define-page admin "/admin" ()
   (process "admin.ctml"
