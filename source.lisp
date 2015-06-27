@@ -11,6 +11,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defclass channel ()
   ())
 
+(defgeneric description (source))
 (defgeneric source-type (source))
 (defgeneric open-source (type identifier &key &allow-other-keys))
 (defgeneric close-source (source))
@@ -25,11 +26,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defgeneric payload (event))
 
 ;; Registration
-(define-storage source)
-
-(defun list-sources ()
-  (sort (loop for src being the hash-values of *source* collect src) #'string<
-        :key #'identifier))
+(define-storage source 'equal)
 
 (defmethod open-source :around (type identifier &key)
   (let ((source (call-next-method)))
@@ -47,3 +44,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defmethod print-object ((channel channel) stream)
   (print-unreadable-object (channel stream :type T)
     (format stream "~s ~s" :identifier (identifier channel))))
+
+(defmethod description ((source source))
+  "")
