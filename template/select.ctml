@@ -33,7 +33,7 @@
             </header>
             <section class="channels">
               <ul iterate="(channels *)">
-                <li class="channel" lquery="(data :type (source-type *)) (data :channel (identifier *))">
+                <li class="channel" lquery="(data :channel (identifier *))">
                   <span class="checkbox"><input type="checkbox" name="channels[]" lquery="(val (identifier *)) (attr :id (identifier *))" checked><label lquery="(attr :for (identifier *))"></label></span>
                   <label class="channel-identifier" lquery="(text (identifier *))">IDENTIFIER</label>
                   <span class="channel-length" lquery="(text (length *))">LENGTH</span>
@@ -43,13 +43,13 @@
             <footer class="renderer-options">
               <span class="renderer-transform">
                 <label>Transform: </label>
-                <span class="select"><select name="transform" iterate="transforms">
+                <span class="select"><select name="transform" iterate="(** :transforms)">
                   <option lquery="(text (identifier *))">IDENTIFIER</option>
                 </select></span>
               </span>
-              <span class="renderer-visualizer"
+              <span class="renderer-visualizer">
                 <label>Visualizer: </label>
-                <span class="select"><select name="visualizer" iterate="visualizer">
+                <span class="select"><select name="visualizer" iterate="(** :visualizer)">
                   <option lquery="(text (identifier *))">IDENTIFIER</option>
                 </select></span>
               </span>
