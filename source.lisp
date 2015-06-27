@@ -5,6 +5,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (in-package #:rsbag-renderer)
 
+(define-storage source 'equal)
+
 (defclass source ()
   ())
 
@@ -26,8 +28,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defgeneric payload (event))
 
 ;; Registration
-(define-storage source 'equal)
-
 (defmethod open-source :around (type identifier &key)
   (let ((source (call-next-method)))
     (setf (source (identifier source))

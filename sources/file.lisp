@@ -4,6 +4,13 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 |#
 
 (in-package #:rsbag-renderer)
+(defpackage #:rsbag-renderer.source.file
+  (:use #:cl #:rsbag-renderer)
+  (:export
+   #:file-source
+   #:file-channel
+   #:file-event))
+(in-package #:rsbag-renderer.source.file)
 
 (defclass file-source (source rsbag:bag)
   ((identifier :initarg :identifier :accessor identifier)))

@@ -4,6 +4,10 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 |#
 
 (in-package #:rsbag-renderer)
+(defpackage #:rsbag-renderer.transform.haptic-vicon-3d
+  (:use #:cl #:rsbag-renderer)
+  (:export #:haptic-vicon-3d))
+(in-package #:rsbag-renderer.transform.haptic-vicon-3d)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (rsbag-helper:load-proto-file (asdf:system-relative-pathname :rsbag-renderer "proto/Vicon.proto"))

@@ -20,7 +20,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
     `(setf (transform ,(string-downcase name))
            (make-instance
             'transform
-            :identifier ,(string name)
+            :identifier ,(string-downcase name)
             :description ,(form-fiddle:lambda-docstring lambda)
             :transformer ,lambda
             :origin ,(or *compile-file-pathname* *load-pathname*)
