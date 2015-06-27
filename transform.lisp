@@ -5,7 +5,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (in-package #:rsbag-renderer)
 
-(define-storage transform)
+(define-storage transform 'equalp)
 
 (defclass transform ()
   ((identifier :initarg :identifier :accessor identifier)
@@ -17,7 +17,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defmacro define-transform (name channel-events options &body body)
   (let ((lambda `(lambda ,channel-events
                    ,@body)))
-    `(setf (transform ,(string name))
+    `(setf (transform ,(string-downcase name))
            (make-instance
             'transform
             :identifier ,(string name)
