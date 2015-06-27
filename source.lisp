@@ -5,70 +5,45 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (in-package #:rsbag-renderer)
 
+(defclass source ()
+  ())
+
+(defclass channel ()
+  ())
+
+(defgeneric source-type (source))
+(defgeneric open-source (type identifier &key &allow-other-keys))
+(defgeneric close-source (source))
+(defgeneric channel (source identifier))
+(defgeneric channels (source))
+(defgeneric channel-length (channel))
+(defgeneric channel-source (channel))
+(defgeneric event (channel index))
+(defgeneric identifier (thing))
+(defgeneric id (event))
+(defgeneric timestamp (event))
+(defgeneric payload (event))
+
+;; Registration
 (define-storage source)
 
 (defun list-sources ()
-  (sort (loop for id being the hash-keys of *source* collect id) #'string<))
+  (sort (loop for src being the hash-values of *source* collect src) #'string<
+        :key #'identifier))
 
-(defclass source ()
-  ((identifier :initarg :identifier :accessor identifier))
-  (:default-initargs
-   :identifier (error "IDENTIFIER required.")))
+(defmethod open-source :around (type identifier &key)
+  (let ((source (call-next-method)))
+    (setf (source (identifier source))
+          source)))
 
-(defclass channel ()
-  ((identifier :initarg :identifier :accessor identifier)
-   (source :initarg :source :accessor channel-source))
-  (:default-initargs
-   :identifier (error "IDENTIFIER required.")
-   :channel-source (error "SOURCE required.")))
+(defmethod close-source :after ((source source))
+  (remove-source (identifier source)))
 
-(defclass event ()
-  ((id :initarg :id :accessor id)
-   (channel :initarg :channel :accessor event-channel)
-   (timestamp :initarg :timestamp :accessor timestamp)
-   (payload :initarg :payload :accessor payload))
-  (:default-initargs
-   :id (error "ID required.")
-   :channel (error "CHANNEL required.")
-   :timestamp (error "TIMESTAMP required.")
-   :payload (error "PAYLOAD required.")))
+;; Default methods
+(defmethod print-object ((source source) stream)
+  (print-unreadable-object (source stream :type T)
+    (format stream "~s ~s ~s ~s" :type (source-type source) :identifier (identifier source))))
 
-(defgeneric source-type (source))
-
-(defgeneric open-source (type identifier &key &allow-other-keys)
-  (:method :around (type identifier &key)
-    (let ((source (call-next-method)))
-      (setf (source (identifier source))
-            source))))
-
-(defgeneric close-source (source)
-  (:method :after ((source source))
-    (remove-source (identifier source))))
-
-(defgeneric channel (source identifier))
-
-(defgeneric channels (source))
-
-(defgeneric channel-length (channel))
-
-(defgeneric event (channel index))
-
-
-(defclass file-source (source)
-  ((bag :initarg :bag :accessor bag)))
-
-(defmethod source-type ((source file-source))
-  :file)
-
-(defmethod open-source ((type (eql :file)) pathname &key)
-  (let* ((pathname (uiop:enough-pathname (etypecase pathname
-                                             (pathname pathname)
-                                             (string (pathname pathname)))
-                                           *default-pathname-defaults*)))
-    (make-instance 'file-source
-                   :identifier (namestring pathname)
-                   :bag (rsbag:open-bag pathname :direction :input))))
-
-(defmethod close-source ((source file-source))
-  (close (bag source))
-  source)
+(defmethod print-object ((channel channel) stream)
+  (print-unreadable-object (channel stream :type T)
+    (format stream "~s ~s" :identifier (identifier channel))))
