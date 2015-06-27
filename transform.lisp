@@ -14,17 +14,19 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
    (schema :initarg :schema :accessor schema)
    (origin :initarg :origin :accessor origin)))
 
+(defmethod initialize-instance :after ((transform transform) &key)
+  (setf (transform (identifier transform)) transform))
+
 (defmacro define-transform (name channel-events options &body body)
   (let ((lambda `(lambda ,channel-events
                    ,@body)))
-    `(setf (transform ,(string-downcase name))
-           (make-instance
-            'transform
-            :identifier ,(string-downcase name)
-            :description ,(form-fiddle:lambda-docstring lambda)
-            :transformer ,lambda
-            :origin ,(or *compile-file-pathname* *load-pathname*)
-            ,@options))))
+    `(make-instance
+      'transform
+      :identifier ,(string-downcase name)
+      :description ,(form-fiddle:lambda-docstring lambda)
+      :transformer ,lambda
+      :origin ,(or *compile-file-pathname* *load-pathname*)
+      ,@options)))
 
 (defgeneric transform-events (transform events))
 
