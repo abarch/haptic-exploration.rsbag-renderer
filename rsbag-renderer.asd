@@ -15,6 +15,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
                (:file "toolkit")
                (:file "source")
                (:file "transform")
+               (:file "visualizer")
                (:file "json")
                (:file "server")
                (:file "front")
