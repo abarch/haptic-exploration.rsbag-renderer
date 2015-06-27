@@ -26,12 +26,13 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   :file)
 
 (defmethod open-source ((type (eql :file)) pathname &key)
-  (let* ((pathname (uiop:enough-pathname (etypecase pathname
-                                           (pathname pathname)
-                                           (string (pathname pathname)))
-                                         *default-pathname-defaults*))
+  (let* ((identifier (namestring
+                      (uiop:enough-pathname (etypecase pathname
+                                              (pathname pathname)
+                                              (string (pathname pathname)))
+                                            (root-pathname ""))))
          (bag (rsbag:open-bag pathname :direction :input))
-         (source (change-class bag 'file-source :identifier pathname)))
+         (source (change-class bag 'file-source :identifier identifier)))
     (loop for channel in (rsbag:bag-channels source)
           do (change-class channel 'file-channel))
     source))
@@ -52,6 +53,14 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (defmethod channel-source ((channel file-channel))
   (rsbag:channel-bag channel))
+
+(defmethod duration ((channel file-channel))
+  (- (local-time:timestamp-to-universal (event channel (1- (length channel))))
+     (local-time:timestamp-to-universal (event channel 0))))
+
+(defmethod resolution ((channel file-channel))
+  (/ (channel-length channel)
+     (duration channel)))
 
 (defmethod event ((channel file-channel) index)
   (make-instance

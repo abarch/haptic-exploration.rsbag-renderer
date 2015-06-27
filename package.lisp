@@ -25,6 +25,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
    #:channels
    #:channel-length
    #:channel-source
+   #:resolution
+   #:duration
    #:event
    #:identifier
    #:id
@@ -33,7 +35,9 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   ;; toolkit.lisp
   (:export
    #:*debugger*
-   #:define-storage)
+   #:*root*
+   #:define-storage
+   #:root-pathname)
   ;; transform.lisp
   (:export
    #:transform

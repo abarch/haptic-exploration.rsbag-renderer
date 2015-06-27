@@ -21,6 +21,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defgeneric channels (source))
 (defgeneric channel-length (channel))
 (defgeneric channel-source (channel))
+(defgeneric duration (channel))
+(defgeneric resolution (channel))
 (defgeneric event (channel index))
 (defgeneric identifier (thing))
 (defgeneric id (event))
@@ -47,3 +49,11 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (defmethod description ((source source))
   "")
+
+(macrolet ((define-maximizer (method class accessor)
+             `(defmethod ,method ((,class ,class))
+                (loop for chan in (,accessor ,class)
+                      maximize (,method chan)))))
+  (define-maximizer channel-length source channels)
+  (define-maximizer resolution source channels)
+  (define-maximizer duration source channels))
