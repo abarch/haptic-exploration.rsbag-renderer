@@ -7,7 +7,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (defun start ()
   (start-listener 8080)
-  (dolist (file (uiop:directory-files (resource "source/")))
+  (dolist (file (uiop:directory-files (resource "tide/")))
     (when (string-equal (pathname-type file) "tide")
       (open-source :file file))))
 
