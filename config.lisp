@@ -7,9 +7,10 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (defun start ()
   (start-listener 8080)
-  (dolist (file (uiop:directory-files (resource "tide/")))
-    (when (string-equal (pathname-type file) "tide")
-      (open-source :file file))))
+  (dolist (file (uiop:directory-files (root-pathname "tide/") "*.tide"))
+    (open-source :file file))
+  (dolist (file (uiop:directory-files (root-pathname "visualizers/") "*.tide"))
+    (load-visualizer file)))
 
 (defun stop (&key quit)
   (stop-listener 8080)
