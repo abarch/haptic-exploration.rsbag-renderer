@@ -1,3 +1,4 @@
+
 #|
 This file is a part of rsbag-renderer
 Author: Nicolas Hafner <shinmera@tymoon.eu>
@@ -7,12 +8,13 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (defvar *debugger* NIL)
 
-(defmacro define-storage (basename)
-  (let ((var (intern (format NIL "*~a*" (string-upcase basename))))
-        (fun (intern (format NIL "~a" (string-upcase basename))))
-        (rem (intern (format NIL "REMOVE-~a" (string-upcase basename)))))
+(defmacro define-storage (basename &optional (test ''equal))
+  (let ((var (intern (format NIL "*~a*" basename)))
+        (fun (intern (format NIL "~a" basename)))
+        (rem (intern (format NIL "~a-~a" :REMOVE basename)))
+        (lis (intern (format NIL "~a-~a~a" :LIST basename :S))))
     `(progn
-       (defvar ,var (make-hash-table :test 'equal))
+       (defvar ,var (make-hash-table :test ,test))
 
        (defun ,fun (id)
          (gethash id ,var))
@@ -22,8 +24,12 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
        (defun ,rem (id)
          (remhash id ,var))
+
+       (defun ,lis ()
+         (sort (loop for v being the hash-values of ,var collect v)
+               #'string< :key #'identifier))
        
-       (values ',fun ',rem ',var))))
+       (values ',fun ',rem ',lis ',var))))
 
 (defun resource (path &optional error-p)
   (or (probe-file (merge-pathnames path))
