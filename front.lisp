@@ -8,13 +8,17 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (define-page front "/" ()
   (redirect "/select"))
 
+(defun process (temp &rest args)
+  (let ((*package* (load-time-value (find-package '#:rsbag-renderer))))
+    (apply #'clip:process (template temp) args)))
+
 (define-page select "/select" ()
-  (clip:process (template "select.ctml")
-                :sources (list-sources)
-                :transforms (list-transforms)))
+  (process "select.ctml"
+           :sources (list-sources)
+           :transforms (list-transforms)))
 
 (define-page render "/render" ()
-  (clip:process (template "render.ctml")))
+  (process "render.ctml"))
 
 (define-page admin "/admin" ()
-  (clip:process (template "admin.ctml")))
+  (process "admin.ctml"))
