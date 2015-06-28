@@ -54,9 +54,15 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defmethod channel-source ((channel file-channel))
   (rsbag:channel-bag channel))
 
+(defmethod start-timestamp ((channel file-channel))
+  (timestamp (event channel 0)))
+
+(defmethod end-timestamp ((channel file-channel))
+  (timestamp (event channel (1- (length channel)))))
+
 (defmethod duration ((channel file-channel))
-  (- (local-time:timestamp-to-universal (timestamp (event channel (1- (length channel)))))
-     (local-time:timestamp-to-universal (timestamp (event channel 0)))))
+  (- (local-time:timestamp-to-universal (end-timestamp channel))
+     (local-time:timestamp-to-universal (start-timestamp channel))))
 
 (defmethod resolution ((channel file-channel))
   (/ (channel-length channel)

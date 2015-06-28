@@ -81,3 +81,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defun dissect-error (err)
   (v:error :server "Unhandled error:~&~a" (dissect:present err NIL))
   (when *debugger* (invoke-debugger err)))
+
+(defmacro define-reducer-method (reduction method class accessor)
+  `(defmethod ,method ((,class ,class))
+     (loop for chan in (,accessor ,class)
+           ,reduction (,method chan))))
