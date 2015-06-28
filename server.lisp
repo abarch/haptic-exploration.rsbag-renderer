@@ -37,9 +37,22 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (:report (lambda (c s) (format s "Endpoint ~s requested, but it does not exist!" (endpoint c)))))
 
 (defun bindings-from-args (args)
-  (loop for arg in args
-        unless (eql arg '&optional)
-        collect `(,arg ,(string arg))))
+  (loop with in-optional = NIL
+        for arg in args
+        for (name default) = (cond ((and in-optional (listp arg))
+                                    arg)
+                                   ((symbolp arg)
+                                    (list arg))
+                                   (T (error "Unexpected argument ~s in api-lambda-list." arg)))
+        for binding = (cond ((eql arg '&optional)
+                             (setf in-optional T)
+                             NIL)
+                            (in-optional
+                             `(,name (or (post/get ,(string name))
+                                         ,default)))
+                            (T
+                             `(,name (post/get ,(string name)))))
+        when binding collect binding ))
 
 (defun binding-check (args)
   (let ((req (loop for arg in args until (eql arg '&optional) collect arg))
@@ -58,25 +71,31 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
              ,(binding-check args)
              ,@body))))
 
+(defun server-stream (&key (type :flexi))
+  (ecase type
+    (:flexi
+     (flexi-streams:make-flexi-stream (server-stream :type :octet) :external-format :utf-8))
+    (:octet
+     (hunchentoot:send-headers))))
+
 (defmacro with-api-output ((message &rest format-args) &body body)
-  `(with-json-output ()
+  `(with-json-output ((server-stream))
      (with-json-object ()
        (pair "status" (hunchentoot:return-code*))
        (pair "message" (format NIL ,message ,@format-args))
-       (key "data")
-       (with-json-value ,@body))))
+       (with-json-value ("data")
+         ,@body))))
  
 (define-page api "/api/(.*)" (endpoint)
   (setf (hunchentoot:content-type*) "application/json; charset=utf-8")
   (handler-case
       (dissect:with-truncated-stack ()
-        (handler-bind ((error #'dissect-error))
-          (loop for api being the hash-keys of *api*
-                for func being the hash-values of *api*
-                do (when (string-equal endpoint api)
-                     (return (funcall func)))
-                finally (error 'endpoint-missing :endpoint endpoint))))
-    (arg-missing (err)
+        (loop for api being the hash-keys of *api*
+              for func being the hash-values of *api*
+              do (when (string-equal endpoint api)
+                   (return (funcall func)))
+              finally (error 'endpoint-missing :endpoint endpoint)))
+    (args-missing (err)
       (setf (hunchentoot:return-code*) 400)
       (with-api-output ("~a" err)
         (write-json (args err))))
