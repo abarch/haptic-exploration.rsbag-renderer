@@ -21,13 +21,13 @@
         </header>
       </div>
       <c:when test="source">
-        <section class="player bag component" lquery="(data :frames (channel-length source)) (data :resolution (resolution source))">
+        <section class="player bag component" lquery="(data :frames (channel-length source)) (data :resolution (float (resolution source)))">
           <header>
             <h2>
               <span class="type" lquery="(text (source-type source))">TYPE</span>:
               <span class="identifier" lquery="(text (identifier source))">IDENTIFIER</span>
             </h2>
-            <span class="description">Some description maybe</span>
+            <span class="description" lquery="(text (description source))">DESCRIPTION</span>
           </header>
           <nav class="controls">
             <a class="button slower hidden" title="Decrease playback speed"><i class="fa fa-backward fa-fw"></i></a>
