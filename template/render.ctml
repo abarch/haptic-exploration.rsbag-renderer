@@ -73,7 +73,7 @@
           RENDERER = new Renderer($(".player").first());
           
           $.each(API.params("visualizer"), function(i,visualizer){
-              API.visualizer({visualization: visualizer}, function(data){
+              API.visualizer({visualizer: visualizer}, function(data){
                   RENDERER.loadVisualizer(data.payload.js,
                                           data.payload.html,
                                           data.payload.css);
