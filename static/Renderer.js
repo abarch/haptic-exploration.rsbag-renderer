@@ -69,9 +69,11 @@ var Renderer = function(player, resolution, frames){
         $(".seeker .loaded", self.player).width(self.framesLoaded*displayUnit+"px");
         $(".seeker .current", self.player).width(self.frame*displayUnit+"px");
         // Update visualizers
-        $.each(self.visualizers, function(i, visualizer){
-            visualizer.show(self.frames[self.frame]);
-        });
+        if(0 <= self.frame && self.frame < self.framesLoaded){
+            $.each(self.visualizers, function(i, visualizer){
+                visualizer.show(self.frames[self.frame]);
+            });
+        }
         return null;
     }
 
