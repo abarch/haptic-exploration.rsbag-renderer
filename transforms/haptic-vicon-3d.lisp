@@ -55,10 +55,18 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
           (- maxh minh))
        minh)))
 
-(define-transform haptic-vicon-3d (vicon haptic) ()
+(defun find-type (type &rest args)
+  (loop for arg in args
+        do (v:info :test "~a ~a" arg (type-of arg))
+        when (typep arg type)
+        return arg))
+
+(define-transform haptic-vicon-3d (a b) ()
   "Basic specific transform tailored to haptic and vicon combined recordings towards a GL3DVisualizer."
-  (let* ((vicon (payload vicon))
-         (haptic (payload haptic))
+  (let* ((a (payload a))
+         (b (payload b))
+         (vicon (find-type 'rst.devices.mocap:vicon a b))
+         (haptic (find-type 'rst.devices.haptic:haptic a b))
          (points (rst.devices.mocap:vicon-points vicon))
          (channels (rst.devices.haptic:haptic-channels haptic)))
     (with-json-object ()
@@ -66,9 +74,9 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
             do (let* ((coords (rst.devices.mocap:vicon/marker-point-position point))
                       (name (rst.devices.mocap:vicon/marker-point-name point))
                       (channel (vicon-haptic-channel name)))
-                 (key name)
-                 (with-json-value ()
-                   (with-json-object () (pair "X" (rst.math:vec3ddouble-x coords))
+                 (with-json-value (name)
+                   (with-json-object ()
+                     (pair "X" (rst.math:vec3ddouble-x coords))
                      (pair "Y" (rst.math:vec3ddouble-y coords))
                      (pair "Z" (rst.math:vec3ddouble-z coords))
                      (when channel
