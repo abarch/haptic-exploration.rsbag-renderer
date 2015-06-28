@@ -51,7 +51,7 @@ var Renderer = function(player, resolution, frames){
         var time = function(frame, resolution){
             resolution = resolution || self.resolution;
             var seconds = frame / resolution;
-            var msecs = frame % resolution / resolution * 1000;
+            var msecs = Math.floor(frame % resolution / resolution * 1000);
             var secs = Math.floor(seconds) % 60;
             var mins = Math.floor(seconds / 60);
             return pad(mins)+":"+pad(secs)+":"+pad(msecs,3);
