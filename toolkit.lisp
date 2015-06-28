@@ -62,8 +62,21 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
         when (string-equal name item)
         collect val))
 
+(defun ensure-list (list)
+  (if (listp list) list (list list)))
+
 (defun maybe-unlist (list)
   (if (cdr list) list (car list)))
+
+(defun << (fun &rest curry)
+  (if curry
+      (lambda (&rest args) (apply fun (append args curry)))
+      fun))
+
+(defun >> (fun &rest curry)
+  (if curry
+      (lambda (&rest args) (apply fun (append curry args)))
+      fun))
 
 (defun dissect-error (err)
   (v:error :server "Unhandled error:~&~a" (dissect:present err NIL))
