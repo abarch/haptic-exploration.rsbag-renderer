@@ -57,7 +57,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (defun find-type (type &rest args)
   (loop for arg in args
-        do (v:info :test "~a ~a" arg (type-of arg))
         when (typep arg type)
         return arg))
 
