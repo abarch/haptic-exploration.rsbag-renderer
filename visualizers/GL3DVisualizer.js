@@ -51,6 +51,9 @@ var GL3DVisualizer = function(html, FOV, NEAR, FAR){
     self.updateScene = function(points){
         $.each(points, function(k, v){
             self.objects[k].position.set(v["X"], v["Y"], v["Z"]);
+            if(v["color"]){
+                self.objects[k].material.color = new THREE.Color(v["color"]);
+            }
         });
         return self.objects;
     }
@@ -170,7 +173,7 @@ GL3DVisualizer.prototype.makePoint = function(x, y, z, size, color){
     y = y || 0;
     z = z || 0;
     size = size || 0.0075;
-    color = color || 0xFF0000;
+    color = color || 0x000000;
 
     var geometry = new THREE.BoxGeometry(size, size, size);
     var material = new THREE.MeshBasicMaterial({color: color});
