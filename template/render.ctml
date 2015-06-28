@@ -72,8 +72,8 @@
           LOADER = new Loader();
           RENDERER = new Renderer($(".player").first());
           
-          $.each(api.params("visualizer"), function(i,visualizer){
-              API.visualization({visualization: visualizer}, function(data){
+          $.each(API.params("visualizer"), function(i,visualizer){
+              API.visualizer({visualization: visualizer}, function(data){
                   RENDERER.loadVisualizer(data.payload.js,
                                           data.payload.html,
                                           data.payload.css);

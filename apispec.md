@@ -92,12 +92,12 @@ Response:
 
     {}
 
-### /api/visualization/ (visualization)
-* `visualization` -- Required, names the visualization to fetch data of.
+### /api/visualizer/ (visualizer)
+* `visualizer` -- Required, names the visualizer to fetch data of.
 
-Return all available data on a visualization.
+Return all available data on a visualizer.
 
-This includes the visualization payload itself. In order to use a visualization, the
+This includes the visualizer payload itself. In order to use a visualizer, the
 payload data must be fed into the DOM.
 
 Response:
@@ -108,40 +108,40 @@ Response:
                  "css": css,
                  "js": js}}
 
-### /api/visualization/list ()
-Return a list of all available visualizations.
+### /api/visualizer/list ()
+Return a list of all available visualizers.
 
-This does not include all metadata on a visualization, nor the actual visualization
-payload itself. Use /visualization/ instead for that.
+This does not include all metadata on a visualizer, nor the actual visualizer
+payload itself. Use /visualizer/ instead for that.
 
 Response:
 
     [{"name": name,
       "description": description}]
 
-### /api/visualization/load (path source name)
-* `path`   -- Optional, names a server-local source path to load the visualization from.
+### /api/visualizer/load (path source name)
+* `path`   -- Optional, names a server-local source path to load the visualizer from.
 * `source` -- Optional, a JSON object that contains the source files.
-* `name`   -- Optional, names the visualization.
+* `name`   -- Optional, names the visualizer.
 
-Dynamically load a new visualization.
+Dynamically load a new visualizer.
 
 One of `path` or `source` must be given. `path` must be completable to a pathname that
 points to a directory containing files of the pathname's name and with the pathname
 types HTML, CSS, and JS. If `source` is given, it must be a JSON object with the
 fields "html", "css", and "js" which contain the respective payloads. In the
 case when `source` is given, the payloads are saved to disc in the server's default
-visualization directory.
+visualizer directory.
 
 Response:
 
     {"name": name,
      "description": description}
 
-### /api/visualization/remove (visualization)
-* `visualization` -- Required, names the visualization to remove.
+### /api/visualizer/remove (visualizer)
+* `visualizer` -- Required, names the visualizer to remove.
 
-Remove a visualization from the system.
+Remove a visualizer from the system.
 
 This will /not/ delete any files from disc.
 
@@ -149,14 +149,14 @@ Response:
 
     {}
 
-### /api/visualization/update (visualization source)
-* `visualization` -- Required, names the visualization to update.
-* `source`        -- Required, a JSON object that contains the visualization parts to
+### /api/visualizer/update (visualizer source)
+* `visualizer` -- Required, names the visualizer to update.
+* `source`        -- Required, a JSON object that contains the visualizer parts to
                      update.
 
-Update a visualization with the given `source`.
+Update a visualizer with the given `source`.
 
-See /visualization/load for the necessary structure and consequent effects of `source`.
+See /visualizer/load for the necessary structure and consequent effects of `source`.
 
 Response:
 

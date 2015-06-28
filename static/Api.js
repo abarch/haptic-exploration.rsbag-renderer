@@ -21,7 +21,7 @@ var error = function(){
 var Api = function(){
     var self = this;
     
-    var params = getUrlParams();
+    var params = self.getUrlParams();
 
     self.params = function(name){return params[name];}
     self.param = function(name){return self.params(name)[0];}
@@ -54,7 +54,10 @@ var Api = function(){
         var parts = apipoint.split("/");
         var path = parts.slice(0,-1);
         var location = self;
-        $.each(path, function(i, part){location = location[part];});
+        $.each(path, function(i, part){
+            if(location[part] === undefined) location[part]={};
+            location = location[part];
+        });
         location[parts[parts.length-1]] = func;
         return func;
     }
@@ -65,16 +68,16 @@ var Api = function(){
     defineApiFunc("transform/load", ["path", "source", "name"]);
     defineApiFunc("transform/remove", ["transform"]);
     defineApiFunc("transform/update", ["transform", "source"]);
-    defineApiFunc("visualization", ["visualization"]);
-    defineApiFunc("visualization/list", []);
-    defineApiFunc("visualization/load", ["path", "source", "name"]);
-    defineApiFunc("visualization/remove", ["visualization"]);
-    defineApiFunc("visualization/update", ["visualization", "source"]);
+    defineApiFunc("visualizer", ["visualizer"]);
+    defineApiFunc("visualizer/list", []);
+    defineApiFunc("visualizer/load", ["path", "source", "name"]);
+    defineApiFunc("visualizer/remove", ["visualizer"]);
+    defineApiFunc("visualizer/update", ["visualizer", "source"]);
     defineApiFunc("source", ["source"]);
     defineApiFunc("source/list", []);
     defineApiFunc("source/add/file", ["path", "name"]);
     defineApiFunc("source/remove", ["source"]);
-    defineApiFunc("source/channel", ["source" "channel"]);
+    defineApiFunc("source/channel", ["source", "channel"]);
     defineApiFunc("source/channel/list", ["source"]);
     defineApiFunc("source/channel/event", ["source", "channel", "transform",
                                            "skip", "amount", "from", "to"]);
