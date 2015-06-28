@@ -18,6 +18,27 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
           :allow-missing-time-part NIL
           :allow-missing-timezone-part T))
 
+(define-api transform (transform) ()
+  (let ((transform (or (transform transform)
+                       (error "No such transform ~s" transform))))
+    (with-api-output ("Transform data")
+      (with-json-object ()
+        (pair "identifier" (identifier transform))
+        (pair "description" (description transform))))))
+
+(define-api transform/list () ()
+  (with-api-output ("Transform listing")
+    (with-json-array ()
+      (dolist (transform (list-transforms))
+        (entry (identifier transform))))))
+
+(define-api transform/remove (transform) ()
+  (unless (transform transform)
+    (error "No such transform ~s" transform))
+  (remove-transform transform)
+  (with-api-output ("Transform removed.")
+    (json-null)))
+
 (define-api visualizer (visualizer) ()
   (let ((visualizer (or (visualizer visualizer)
                         (error "No such visualizer ~s" visualizer))))
@@ -37,6 +58,13 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
       (dolist (visualizer (list-visualizers))
         (entry (identifier visualizer))))))
 
+(define-api visualizer/remove (visualizer) ()
+  (unless (visualizer visualizer)
+    (error "No such visualizer ~s" visualizer))
+  (remove-visualizer visualizer)
+  (with-api-output ("Visualizer removed.")
+    (json-null)))
+
 (define-api source (source) ()
   (let ((source (or (source source)
                     (error "No such source ~s" source))))
@@ -50,6 +78,12 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
     (with-json-array ()
       (dolist (source (list-sources))
         (entry (identifier source))))))
+
+(define-api source/remove (source) ()
+  (close-source (or (source source)
+                    (error "No such source ~s" source)))
+  (with-api-output ("Source removed.")
+    (json-null)))
 
 (define-api source/channel (source channel) ()
   (let* ((source (or (source source)
