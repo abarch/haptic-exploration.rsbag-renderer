@@ -18,6 +18,10 @@ var error = function(){
 /*
  * API class
  */
+// Prevent jQuery from composing multiple same-named parameters to
+// a []-suffixed name automatically.
+jQuery.ajaxSettings.traditional = true;
+
 var Api = function(){
     var self = this;
     
@@ -37,6 +41,7 @@ var Api = function(){
         if(apipoint == null) throw "No apipoint given to define!";
         // Construct closure
         var func = function(args, callback){
+            self.log("Calling",apipoint,"with",args);
             $.ajax({
                 dataType: "json",
                 url: "/api/"+apipoint,
@@ -46,7 +51,10 @@ var Api = function(){
                     data: values.data,
                     message: values.message,
                     callback: callback
-                });}
+                });},
+                error: function(jqr, status, error){
+                    window.error("Error on API request",url,"with",args,":",status,error);
+                }
             });
             return null;
         }
@@ -83,7 +91,20 @@ var Api = function(){
                                            "skip", "amount", "from", "to"]);
 
     self.streamSource = function(apiargs, deposit){
-        
+        apiargs.skip = apiargs.skip || 0;
+        apiargs.amount = apiargs.amount || 1000;
+        self.source.channel.event(apiargs, function(data){
+            if(0 < data.length){
+                // Unpack
+                $.each(data,function(i,item){
+                    data[i]=item.data;
+                });
+                deposit(data);
+                // Relaunch
+                apiargs.skip += apiargs.amount;
+                self.streamSource(apiargs, deposit);
+            }
+        });
     }
 }
 
