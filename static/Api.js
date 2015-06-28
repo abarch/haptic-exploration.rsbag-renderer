@@ -39,7 +39,7 @@ var Api = function(){
         var func = function(args, callback){
             $.ajax({
                 dataType: "json",
-                url: apipoint,
+                url: "/api/"+apipoint,
                 data: args,
                 success: function(values){transform.call({
                     status: values.status,
