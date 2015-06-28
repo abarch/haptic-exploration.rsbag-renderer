@@ -47,14 +47,14 @@
         </ul>
       </section>
 
-      <section class="component listing visualizations">
-        <header><h2>Visualizations</h2></header>
-        <ul iterate="visualizations">
-          <li class="visualization">
+      <section class="component listing visualizers">
+        <header><h2>Visualizers</h2></header>
+        <ul iterate="visualizers">
+          <li class="visualizer">
             <span class="identifier" lquery="(text (identifier *))">IDENTIFIER</span>
             <span class="description" lquery="(text (description *))">DESCRIPTION</span>
-            <form class="actions" action="/api/visualization/remove" method="POST">
-              <input type="hidden" name="visualization" lquery="(val (identifier *))" value="" />
+            <form class="actions" action="/api/visualizer/remove" method="POST">
+              <input type="hidden" name="visualizer" lquery="(val (identifier *))" value="" />
               <input type="submit" name="action" value="Remove" />
             </form>
           </li>
