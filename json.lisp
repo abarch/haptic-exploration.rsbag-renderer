@@ -1,3 +1,4 @@
+
 #|
 This file is a part of rsbag-renderer
 Author: Nicolas Hafner <shinmera@tymoon.eu>
@@ -7,15 +8,26 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (defvar *json-output*)
 (defvar *started*)
+(defparameter *string-replaces*
+  (let ((map (make-hash-table :test 'eql)))
+    (loop for (k v) in '((#\\ "\\\\")
+                         (#\" "\\\"")
+                         (#\Backspace "\\b")
+                         (#\Page "\\f")
+                         (#\Newline "\\n")
+                         (#\Return "\\r")
+                         (#\Tab "\\t"))
+          do (setf (gethash k map) v))
+    map))
 
 (declaim (inline json-delimiter
                  json-null
                  json-false
                  json-true))
 
-(defun json-delimiter (delim &optional (dest *json-output*))
+(defun json-delimiter (&optional (dest *json-output*))
   (if *started*
-      (write-char (char delim 0) dest)
+      (write-char #\, dest)
       (setf *started* T)))
 
 (defun json-null (&optional (dest *json-output*))
@@ -29,55 +41,73 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (defun write-json (object &optional (dest *json-output*))
   (typecase object
-    (string (prin1 object dest))
-    (list (with-json-array (dest)
-            (loop for i in object
-                  do (entry i))))
-    (vector (with-json-array (dest)
-              (loop for i across object
-                    do (entry i))))
-    (T (princ object dest))))
+    (integer
+     (princ object dest))
+    
+    (ratio
+     (write-json (coerce object 'double-float) dest))
+    
+    (float
+     (let ((*read-default-float-format* 'double-float))
+       (format dest "~F" (coerce object 'double-float))))
+    
+    (string
+     (write-char #\" dest)
+     (loop for char across object
+           for rep = (gethash char *string-replaces*)
+           do (if rep
+                  (write-string rep dest)
+                  (write-char char dest)))
+     (write-char #\" dest))
+    
+    (list
+     (with-json-array (dest)
+       (loop for i in object
+             do (entry i))))
+    
+    (vector
+     (with-json-array (dest)
+       (loop for i across object
+             do (entry i))))
+    
+    (T (write-json (princ-to-string object) dest)))
+  object)
 
 (defmacro with-delimiters ((destination left right) &body body)
   `(unwind-protect
         (let ((*started* NIL))
-          (write-string ,left ,destination)
+          (write-char ,left ,destination)
           ,@body)
-     (write-string ,right ,destination)))
+     (write-char ,right ,destination)))
 
 (defmacro with-json-array ((&optional (destination '*json-output*)) &body body)
-  `(with-delimiters (,destination "[" "]")
-     (macrolet ((with-json-entry (&body body)
-                  `(progn (json-delimiter ",")
-                          ,@body)))
-       (flet ((entry (value)
-                (with-json-entry ()
-                  (write-json value ,destination))))
-         ,@body))))
+  `(with-delimiters (,destination #\[ #\])
+     (flet ((entry (value)
+              (with-json-entry (,destination)
+                (write-json value ,destination))))
+       ,@body)))
+
+(defmacro with-json-entry ((&optional (destination '*json-output*)) &body body)
+  `(progn (json-delimiter ,destination)
+          ,@body))
 
 (defmacro with-json-object ((&optional (destination '*json-output*)) &body body)
-  `(with-delimiters (,destination "{" "}")
-     (macrolet ((with-json-key (&body body)
-                  `(progn (json-delimiter ",")
-                          (with-json-string (,',destination)
-                            ,@body)))
-                (with-json-value (&body body)
-                  `(progn (json-delimiter ":")
-                          ,@body)))
-       (labels ((key (string)
-                  (with-json-key
-                      (write-string string ,destination)))
-                (value (value)
-                  (with-json-value
-                      (write-json value ,destination)))
-                (pair (key value)
-                  (key key) (value value)))
-         ,@body))))
+  `(with-delimiters (,destination #\{ #\})
+     (flet ((pair (key value)
+              (with-json-value (key ,destination)
+                (write-json value ,destination))))
+       ,@body)))
 
-(defmacro with-json-string ((&optional (destination '*json-output*)) &body body)
-  `(with-delimiters (,destination "\"" "\"")
+(defmacro with-json-value ((key &optional (destination '*json-output*)) &body body)
+  `(progn
+     (json-delimiter ,destination)
+     (write-json ,key ,destination)
+     (write-char #\: ,destination)
      ,@body))
 
-(defmacro with-json-output (() &body body)
-  `(with-output-to-string (*json-output*)
-     ,@body))
+(defmacro with-json-output ((&optional stream) &body body)
+  (if stream
+      `(let ((*json-output* ,stream))
+         ,@body)
+      `(with-output-to-string (*json-output*)
+         ,@body)))
