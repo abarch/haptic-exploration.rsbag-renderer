@@ -39,7 +39,7 @@ Return metadata information about a given data transform.
 
 Response:
 
-    {"name": name
+    {"identifier": identifier
      "description": description}
 
 ### /api/transform/list ()
@@ -50,25 +50,25 @@ on a transformer to fetch that information.
 
 Response:
 
-    [{"name": name,
+    [{"identifier": identifier,
       "description": description}]
 
-### /api/transform/load (path source name)
-* `path`   -- Optional, names a server-local source path to load the transform spec from.
-* `source` -- Optional, the direct source code to construct the transform from.
-* `name`   -- Optional, names the transform.
+### /api/transform/load (path source identifier)
+* `path`         -- Optional, names a server-local source path to load the transform spec from.
+* `source`       -- Optional, the direct source code to construct the transform from.
+* `identifier`   -- Optional, names the transform.
 
 Dynamically load a new data transform into the system.
 
-If `name` is not given, it is automatically recognised from the source or path. If no
-name can be automatically recognised, a random UUID is chosen instead. One of `path`
-or `source` must be given, where `path` must be completable to a pathname that points
+If `identifier` is not given, it is automatically recognised from the source or path. If no
+identifier can be automatically recognised, a random UUID is chosen instead. One of `path`
+or `source` must be given, where `path` must be completable to a pathidentifier that points
 to a Lisp source file to `CL:LOAD`. If `source` is given instead, it must be string that
 is `CL:READ`able to be subsequently `CL:COMPILE`d.
 
 Response:
 
-    {"name": name,
+    {"identifier": identifier,
      "description": description}
 
 ### /api/transform/remove (transform)
@@ -102,7 +102,7 @@ payload data must be fed into the DOM.
 
 Response:
 
-    {"name": name,
+    {"identifier": identifier,
      "description": description,
      "payload": {"html": html,
                  "css": css,
@@ -116,18 +116,18 @@ payload itself. Use /visualizer/ instead for that.
 
 Response:
 
-    [{"name": name,
+    [{"identifier": identifier,
       "description": description}]
 
-### /api/visualizer/load (path source name)
-* `path`   -- Optional, names a server-local source path to load the visualizer from.
-* `source` -- Optional, a JSON object that contains the source files.
-* `name`   -- Optional, names the visualizer.
+### /api/visualizer/load (path source identifier)
+* `path`         -- Optional, names a server-local source path to load the visualizer from.
+* `source`       -- Optional, a JSON object that contains the source files.
+* `identifier`   -- Optional, names the visualizer.
 
 Dynamically load a new visualizer.
 
-One of `path` or `source` must be given. `path` must be completable to a pathname that
-points to a directory containing files of the pathname's name and with the pathname
+One of `path` or `source` must be given. `path` must be completable to a pathidentifier that
+points to a directory containing files of the pathidentifier's identifier and with the pathidentifier
 types HTML, CSS, and JS. If `source` is given, it must be a JSON object with the
 fields "html", "css", and "js" which contain the respective payloads. In the
 case when `source` is given, the payloads are saved to disc in the server's default
@@ -135,7 +135,7 @@ visualizer directory.
 
 Response:
 
-    {"name": name,
+    {"identifier": identifier,
      "description": description}
 
 ### /api/visualizer/remove (visualizer)
@@ -151,8 +151,8 @@ Response:
 
 ### /api/visualizer/update (visualizer source)
 * `visualizer` -- Required, names the visualizer to update.
-* `source`        -- Required, a JSON object that contains the visualizer parts to
-                     update.
+* `source`     -- Required, a JSON object that contains the visualizer parts to
+                  update.
 
 Update a visualizer with the given `source`.
 
@@ -169,7 +169,7 @@ Return metadata information of a source.
 
 Response:
 
-    {"name": name,
+    {"identifier": identifier,
      "description": description}
 
 ### /api/source/list ()
@@ -179,21 +179,21 @@ This will not return all available metadata on sources. Use /source/ instead.
 
 Response:
 
-    [{"name": name,
+    [{"identifier": identifier,
       "description": description}]
 
-### /api/source/add/file (path name)
-* `path` -- Required, a server local path that points to a TIDE file.
-* `name` -- Optional, names the source.
+### /api/source/add/file (path identifier)
+* `path`       -- Required, a server local path that points to a TIDE file.
+* `identifier` -- Optional, names the source.
 
 Add a new file source to the system.
 
-`path` must be completable to a pathname pointing to a file with pathname-type TIDE. 
-If `name` is not given, it is automatically determined by the pathname-name.
+`path` must be completable to a pathidentifier pointing to a file with pathidentifier-type TIDE. 
+If `identifier` is not given, it is automatically determined by the pathidentifier-identifier.
 
 Response:
 
-    {"name": name,
+    {"identifier": identifier,
      "description": description}
 
 ### /api/source/remove (source)
@@ -215,7 +215,7 @@ Return metadata information on a `source`'s `channel`.
 
 Response:
 
-    {"name": name,
+    {"identifier": identifier,
      "length": length,
      "start": start-timestamp,
      "end": end-timestamp,
@@ -242,7 +242,7 @@ This will not return all available channel metadata. Use /source/channel/ instea
 
 Return event objects from a given `source`'s `channel`/s.
 
-The events are transformed by the named `transform` and the resulting data is used to fill
+The events are transformed by the identifierd `transform` and the resulting data is used to fill
 in the `data` field in the response. If the transform is unknown to the system, an error is
 returned instead. `skip` has to be a positive integer that denotes from which event in the
 channels on events should be delivered. If `skip` is greater than the length of the
