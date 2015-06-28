@@ -23,7 +23,11 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
    #:write-json
    #:with-json-array
    #:with-json-object
-   #:with-json-output)
+   #:with-json-output
+   #:with-json-entry
+   #:with-json-value
+   #:pair
+   #:entry)
   ;; server.lisp
   (:export
    #:page
@@ -63,6 +67,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
    #:channels
    #:channel-length
    #:channel-source
+   #:start-timestamp
+   #:end-timestamp
    #:resolution
    #:duration
    #:event
