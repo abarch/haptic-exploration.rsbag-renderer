@@ -32,7 +32,9 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (gethash name *vicon-haptic-map*))
 
 (defun rgb-hex (rgb)
+  (declare (optimize speed))
   (destructuring-bind (r g b) rgb
+    (declare (type (integer 0 255) r g b))
     (let ((rgb 0))
       (setf (ldb (byte 255 0) rgb) b)
       (setf (ldb (byte 255 8) rgb) g)
@@ -40,6 +42,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
       rgb)))
 
 (defun hue-rgb (h)
+  (declare (optimize speed)
+           (type (integer 0 360) h))
   (let ((x (round (* (- 1 (abs (- (mod (/ h 60) 2) 1))) 255))))
     (cond ((<=   0 h  60) (list 255 x 0))
           ((<=  60 h 120) (list x 255 0))
@@ -49,11 +53,14 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
           ((<= 300 h 360) (list 255 0 x)))))
 
 (defun intensity-hue (intensity)
+  (declare (optimize speed)
+           (type (integer 0 4095) intensity))
   (let ((mini 0) (maxi 4095)
         (minh 0) (maxh 360))
-    (+ (* (/ (- intensity mini) (- maxi mini))
-          (- maxh minh))
-       minh)))
+    (round
+     (+ (* (/ (- intensity mini) (- maxi mini))
+           (- maxh minh))
+        minh))))
 
 (defun find-type (type &rest args)
   (loop for arg in args
@@ -62,6 +69,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (define-transform haptic-vicon-3d (a b) ()
   "Basic specific transform tailored to haptic and vicon combined recordings towards a GL3DVisualizer."
+  (declare (optimize speed))
   (let* ((a (payload a))
          (b (payload b))
          (vicon (find-type 'rst.devices.mocap:vicon a b))

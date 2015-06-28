@@ -23,23 +23,30 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (declaim (inline json-delimiter
                  json-null
                  json-false
-                 json-true))
+                 json-true)
+         (type stream *json-output*)
+         (type boolean *started*))
 
 (defun json-delimiter (&optional (dest *json-output*))
+  (declare (optimize speed) (type stream dest))
   (if *started*
       (write-char #\, dest)
       (setf *started* T)))
 
 (defun json-null (&optional (dest *json-output*))
+  (declare (optimize speed) (type stream dest))
   (write-string "null" dest))
 
 (defun json-false (&optional (dest *json-output*))
+  (declare (optimize speed) (type stream dest))
   (write-string "false" dest))
 
 (defun json-true (&optional (dest *json-output*))
+  (declare (optimize speed) (type stream dest))
   (write-string "true" dest))
 
 (defun write-json (object &optional (dest *json-output*))
+  (declare (optimize speed) (type stream dest))
   (typecase object
     (integer
      (princ object dest))
@@ -84,7 +91,9 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   `(with-delimiters (,destination #\[ #\])
      (flet ((entry (value)
               (with-json-entry (,destination)
-                (write-json value ,destination))))
+                (write-json value ,destination))
+              NIL))
+       (declare (ignorable (function entry)))
        ,@body)))
 
 (defmacro with-json-entry ((&optional (destination '*json-output*)) &body body)
@@ -95,7 +104,9 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   `(with-delimiters (,destination #\{ #\})
      (flet ((pair (key value)
               (with-json-value (key ,destination)
-                (write-json value ,destination))))
+                (write-json value ,destination))
+              NIL))
+       (declare (ignorable (function pair)))
        ,@body)))
 
 (defmacro with-json-value ((key &optional (destination '*json-output*)) &body body)

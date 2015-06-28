@@ -13,6 +13,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
     `(setf (page ',name)
            (list ,(format NIL "^~a$" uri)
                  (lambda (,path)
+                   (declare (type string ,path))
                    (cl-ppcre:register-groups-bind ,uri-registers (,uri ,path)
                      ,@body))))))
 
@@ -69,14 +70,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
          (lambda ()
            (let ,(bindings-from-args args)
              ,(binding-check args)
-             ,@body))))
-
-(defun server-stream (&key (type :flexi))
-  (ecase type
-    (:flexi
-     (flexi-streams:make-flexi-stream (server-stream :type :octet) :external-format :utf-8))
-    (:octet
-     (hunchentoot:send-headers))))
+             (locally
+                 ,@body)))))
 
 (defmacro with-api-output ((message &rest format-args) &body body)
   `(with-json-output ((server-stream))
@@ -87,13 +82,14 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
          ,@body))))
  
 (define-page api "/api/(.*)" (endpoint)
+  (declare (optimize speed))
   (setf (hunchentoot:content-type*) "application/json; charset=utf-8")
   (handler-case
       (dissect:with-truncated-stack ()
         (loop for api being the hash-keys of *api*
               for func being the hash-values of *api*
               do (when (string-equal endpoint api)
-                   (return (funcall func)))
+                   (return (funcall (the function func))))
               finally (error 'endpoint-missing :endpoint endpoint)))
     (args-missing (err)
       (setf (hunchentoot:return-code*) 400)
@@ -118,6 +114,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (hunchentoot:redirect to))
 
 (defun post/get (param)
+  (declare (optimize speed))
   (maybe-unlist
    (append (assoc-all param (hunchentoot:post-parameters*))
            (assoc-all param (hunchentoot:get-parameters*)))))
@@ -146,6 +143,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   port)
 
 (defun post-handler (result)
+  (declare (optimize speed))
   (etypecase result
     (plump:node
      (setf (hunchentoot:content-type*) "application/xhtml+xml; charset=utf-8")
@@ -156,11 +154,24 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
     (null (setf (hunchentoot:return-code*) 404)
      "No result (404)")))
 
+(defvar *server-stream*)
+
+(defun server-stream (&key (type :flexi))
+  (or *server-stream*
+      (setf *server-stream*
+            (ecase type
+              (:flexi
+               (flexi-streams:make-flexi-stream (server-stream :type :octet) :external-format :utf-8))
+              (:octet
+               (hunchentoot:send-headers))))))
+
 (progn
   (defun pre-handler (request)
+    (declare (optimize speed))
     (let* ((path (hunchentoot:url-decode
                   (hunchentoot:script-name request)
                   :utf-8))
+           (*server-stream* NIL)
            (result (ignore-errors
                     (dissect:with-truncated-stack ()
                       (handler-bind ((error #'dissect-error))

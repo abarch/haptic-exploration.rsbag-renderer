@@ -74,14 +74,17 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
           (entry (identifier channel)))))))
 
 (define-api source/channel/event (source channel &optional (transform "direct") (skip "0") amount from to) ()
+  (declare (optimize speed))
   (let* ((source (or (source source)
                      (error "No such source ~s" source)))
          (channels (loop for chan in (ensure-list channel)
                          collect (or (channel source chan)
                                      (error "No such channel ~s" chan))))
+         (minlength (loop for chan in channels
+                          minimize (channel-length chan)))
          (transform (or (transform transform)
                         (error "No such transform ~s" transform)))
-         (skip (parse-integer skip))
+         (skip (the fixnum (parse-integer skip)))
          (amount (and amount (parse-integer amount)))
          (from (and from (safely-parse-date from)))
          (to (and to (safely-parse-date to))))
@@ -91,9 +94,10 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
     (with-api-output ("Event delivery")
       (with-json-array ()
         (loop with in-range = (not from)
-              for i from skip
+              for i from skip below minlength
+              for count from 0
               for events = (mapcar (<< #'event i) channels)
-              while (and (or (not amount) (< (- i skip) amount))
+              while (and (or (not amount) (< (the fixnum count) (the fixnum amount)))
                          (or (not to) (loop for ev in events always (local-time:timestamp<= ev to))))
               do (cond (in-range
                         (with-json-entry ()
