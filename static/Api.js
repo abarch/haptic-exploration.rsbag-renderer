@@ -92,7 +92,7 @@ var Api = function(){
 
     self.streamSource = function(apiargs, deposit){
         apiargs.skip = apiargs.skip || 0;
-        apiargs.amount = apiargs.amount || 1000;
+        apiargs.amount = apiargs.amount || 100;
         self.source.channel.event(apiargs, function(data){
             if(0 < data.length){
                 // Unpack

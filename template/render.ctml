@@ -82,7 +82,8 @@
 
           API.streamSource({source: API.param("source"),
                             channel: API.params("channel"),
-                            transform: API.param("transform")},
+                            transform: API.param("transform"),
+                            amount: 100},
                            RENDERER.addFrameData);
       });
     </script>
