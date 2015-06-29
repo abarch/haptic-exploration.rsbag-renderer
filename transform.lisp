@@ -17,12 +17,12 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defmethod initialize-instance :after ((transform transform) &key)
   (setf (transform (identifier transform)) transform))
 
-(defmacro define-transform (name channel-events options &body body)
+(defmacro define-transform (identifier channel-events options &body body)
   (let ((lambda `(lambda ,channel-events
                    ,@body)))
     `(make-instance
       'transform
-      :identifier ,(string-downcase name)
+      :identifier ,(string-downcase identifier)
       :description ,(form-fiddle:lambda-docstring lambda)
       :transformer ,lambda
       :origin ,(or *compile-file-pathname* *load-pathname*)

@@ -13,7 +13,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defclass channel ()
   ())
 
-(defgeneric description (source))
 (defgeneric source-type (source))
 (defgeneric open-source (type identifier &key &allow-other-keys))
 (defgeneric close-source (source))
@@ -26,7 +25,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defgeneric duration (channel))
 (defgeneric resolution (channel))
 (defgeneric event (channel index))
-(defgeneric identifier (thing))
 (defgeneric id (event))
 (defgeneric timestamp (event))
 (defgeneric payload (event))

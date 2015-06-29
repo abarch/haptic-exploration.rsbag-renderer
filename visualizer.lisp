@@ -57,21 +57,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defgeneric save-visualizer (visualizer))
 (defgeneric load-visualizer (visualizer))
 
-(defun write-string-file (string path)
-  (with-open-file (stream path :direction :output
-                               :if-exists :supersede
-                               :if-does-not-exist :create)
-    (write-sequence string stream)))
-
-(defun read-string-file (path)
-  (with-open-file (stream path :direction :input
-                               :if-does-not-exist :error)
-    (with-output-to-string (string)
-      (let ((buffer (make-array 4096 :element-type 'character)))
-        (loop for bytes = (read-sequence buffer stream)
-              do (write-sequence buffer string :start 0 :end bytes)
-              while (= bytes 4096))))))
-
 (defmethod save-visualizer ((vis visualizer))
   (with-slots (js html css path) vis
     (flet ((maybe-write (thing type)

@@ -59,7 +59,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
    #:list-sources
    #:source
    #:channel
-   #:description
    #:source-type
    #:open-source
    #:close-source
@@ -72,7 +71,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
    #:resolution
    #:duration
    #:event
-   #:identifier
    #:id
    #:timestamp
    #:payload)
@@ -80,8 +78,12 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   (:export
    #:*debugger*
    #:*root*
+   #:description
+   #:identifier
+   #:schema
    #:define-storage
-   #:root-pathname)
+   #:root-pathname
+   #:set-root)
   ;; transform.lisp
   (:export
    #:transform
@@ -91,7 +93,6 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
    #:identifier
    #:transformer
    #:description
-   #:schema
    #:origin
    #:define-transform
    #:transform-events)

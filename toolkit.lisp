@@ -9,6 +9,10 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (defvar *debugger* NIL)
 (defvar *root* NIL)
 
+(defgeneric description (object))
+(defgeneric identifier (object))
+(defgeneric schema (object))
+
 (defmacro define-storage (basename &optional (test ''equal))
   (let ((var (intern (format NIL "*~a*" basename)))
         (fun (intern (format NIL "~a" basename)))
@@ -86,3 +90,18 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
   `(defmethod ,method ((,class ,class))
      (loop for chan in (,accessor ,class)
            ,reduction (,method chan))))
+
+(defun write-string-file (string path)
+  (with-open-file (stream path :direction :output
+                               :if-exists :supersede
+                               :if-does-not-exist :create)
+    (write-sequence string stream)))
+
+(defun read-string-file (path)
+  (with-open-file (stream path :direction :input
+                               :if-does-not-exist :error)
+    (with-output-to-string (string)
+      (let ((buffer (make-array 4096 :element-type 'character)))
+        (loop for bytes = (read-sequence buffer stream)
+              do (write-sequence buffer string :start 0 :end bytes)
+              while (= bytes 4096))))))

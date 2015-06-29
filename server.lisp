@@ -6,7 +6,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 (in-package #:rsbag-renderer)
 
 ;; Page dispatch
-(define-storage page)
+(define-storage page 'eql)
 
 (defmacro define-page (name uri uri-registers &body body)
   (let ((path (gensym "PATH")))
@@ -25,7 +25,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
              (return (funcall func to)))))
 
 ;; Api dispatch
-(define-storage api)
+(define-storage api 'eql)
 
 (define-condition args-missing (error)
   ((args :initarg :args :accessor args))
@@ -120,7 +120,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
            (assoc-all param (hunchentoot:get-parameters*)))))
 
 ;; Server backend
-(define-storage listener)
+(define-storage listener 'eql)
 
 (defun start-listener (port)
   (when (listener port)
