@@ -21,6 +21,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
                (:file "front")
                (:file "api")
                (:file "config")
+               (:file "documentation")
                (:module "sources"
                 :components ((:file "file")))
                (:module "transforms"
