@@ -53,7 +53,7 @@ var Api = function(){
                     callback: callback
                 });},
                 error: function(jqr, status, error){
-                    window.error("Error on API request",url,"with",args,":",status,error);
+                    window.error("Error on API request",apipoint,"with",args,":",status,error);
                 }
             });
             return null;
