@@ -26,7 +26,8 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
                 :components ((:file "file")))
                (:module "transforms"
                 :components ((:file "direct")
-                             (:file "haptic-vicon-3d"))))
+                             (:file "haptic-vicon-3d")
+			     (:file "haptic-vicon-board-3d"))))
   :depends-on (:hunchentoot
                :cl-ppcre
                :dissect
