@@ -88,7 +88,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
     (T (write-json (princ-to-string object) dest)))
   object)
 
-(define-compiler-macro write-json (&whole whole object &optional (dest *json-output*)
+(define-compiler-macro write-json (&whole whole object &optional (dest '*json-output*)
 				   &environment env)
   (if (constantp object env)
       (let ((value (eval object)))
