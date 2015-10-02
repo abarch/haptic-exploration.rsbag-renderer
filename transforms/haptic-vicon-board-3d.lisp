@@ -1,3 +1,4 @@
+
 #|
 This file is a part of rsbag-renderer
 Author: Nicolas Hafner <shinmera@tymoon.eu>
@@ -75,63 +76,69 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 ;;     (apply vec))
 ;; )
 
-(define-transform haptic-vicon-board-3d (a b &optional c) ()
+(defun find-channels (events)
+  (let ((vicon nil)
+	(boards '()))
+  (loop :for event :in events
+     :for payload = (payload event) :do
+     (typecase payload
+       (rst.devices.mocap:vicon
+	(setf vicon payload))
+       (rst.devices.interactiveboard:interactive-board
+	(push payload boards))))
+  (multiple-value-call #'values
+    vicon (values-list boards))))
+
+(define-transform haptic-vicon-board-3d (&rest events) ()
   "Basic specific transform tailored to haptic and vicon combined recordings towards a GL3DVisualizer."
 
-  (let* ((a (payload a))
-         (b (payload b))
-	 (c (when c (payload c)))
+  (multiple-value-bind (vicon board-1 board-2)
+      (find-channels events)
+    (let* ((points (rst.devices.mocap:vicon-points vicon)))
+      (with-json-object ()
+	(flet ((do-board (board name)
+		 (let* ((boardconfig (rst.devices.interactiveboard:interactive-board-boardconfig
+				      board))
+		       (pose (rst.devices.interactiveboard:board-configuration-pose boardconfig))
+		       (translation (rst.geometry:pose-translation pose))
+		       (board-x (rst.geometry:translation-x translation))
+		       (board-y (rst.geometry:translation-y translation))
+		       (board-z (rst.geometry:translation-z translation))
+		       (quaternion (rst.geometry:pose-rotation pose))
+		       (bricks (rst.devices.interactiveboard:interactive-board-bricks board)))
+		   (declare (type double-float board-x board-y board-z))
+		   (loop for brick across bricks do
+			(let* ((row (rst.devices.interactiveboard:interactive-board/brick-row brick))
+			       (col (rst.devices.interactiveboard:interactive-board/brick-col brick))
+			       (covered   (rst.devices.interactiveboard:interactive-board/brick-covered brick))
+			       (rho       (rst.devices.interactiveboard:interactive-board/brick-rho brick))
+			       (base-color (if (evenp (+ row (mod col 2))) #x00ff00 #x0000ff))
+			       (clamped-rho (/ (clamp rho 0  10) 10.0))
+			       (rho-color (floor (lerp clamped-rho #xA0 #x00)))
+			       (color (logior rho-color (ash rho-color 8) (ash rho-color 16) base-color))
+			       #+covered (color (logior (if covered #x000000 #x808080) base-color))
 
-         (vicon (find-type 'rst.devices.mocap:vicon a b c))         
-	 (points (rst.devices.mocap:vicon-points vicon))
+			       (color-string (format nil "#~6,'0x" color))
+			       (name (format nil "~A-~D-~D" name row col)))
+			  (declare (type (float 0.0 200 ) rho))
+			  (with-json-value (name)
+			    (with-json-object ()
+			      (pair "X" (+ board-x (* 0.03 row)))
+			      (pair "Y" (+ board-y (* 0.03 col)))
+			      (pair "Z" (- board-z 0.02  (lerp clamped-rho 0 0.02))) ; TODO find real maximum instead of 6000
+			      (pair "size" 0.028)
+			      (pair "color"  color-string))))))))
+	  (when board-1 (do-board board-1 "board-1"))
+	  (when board-2 (do-board board-2 "board-2")))
 
-	 #+unused (haptic (find-type 'rst.devices.haptic:haptic a b c))
-;	 (channels (rst.devices.haptic:haptic-channels haptic))
-
-	 (board (find-type 'rst.devices.interactiveboard:interactive-board a b c))
-	 
-	 (boardconfig (rst.devices.interactiveboard:interactive-board-boardconfig board))
-	 (pose (rst.devices.interactiveboard:board-configuration-pose boardconfig))
-	 (translation (rst.geometry:pose-translation pose))
-	 (board-x (rst.geometry:translation-x translation))
-	 (board-y (rst.geometry:translation-y translation))
-	 (board-z (rst.geometry:translation-z translation))
-	 (quaternion (rst.geometry:pose-rotation pose))
-	 (bricks (rst.devices.interactiveboard:interactive-board-bricks board))
-	 )
-    (declare (type double-float board-x board-y board-z))
-    (with-json-object ()
-      (loop for brick across bricks 
-	   do 
-	   (let* ((row (rst.devices.interactiveboard:interactive-board/brick-row brick))
-		  (col (rst.devices.interactiveboard:interactive-board/brick-col brick))
-		  (covered   (rst.devices.interactiveboard:interactive-board/brick-covered brick))
-		  (rho       (rst.devices.interactiveboard:interactive-board/brick-rho brick))
-		  (base-color (if (evenp (+ row (mod col 2))) #x00ff00 #x0000ff))
-		  
-		  (rho-color (floor (lerp (/ (clamp rho 0 6000) 6000) #xA0 #x00)))
-		  (color (logior rho-color (ash rho-color 8) (ash rho-color 16) base-color))
-		  #+covered (color (logior (if covered #x000000 #x808080) base-color))
-		  
-		  (color-string (format nil "#~6,'0x" color))
-		  (name (format nil "~D-~D" row col)))
-	     (declare (type (integer 0 100000) rho))
-	   (with-json-value (name)
-	     (with-json-object ()
-	       (pair "X" (+ board-x (* 0.03 col)))
-	       (pair "Y" (+ board-y (* 0.03 row)))
-	       (pair "Z" (- board-z 0.04 (lerp (/ (clamp rho 0 6000) 6000) 0 .02))) ; TODO find real maximum instead of 6000
-	       (pair "size" 0.028)
-	       (pair "color" color-string)))))
-
-      (loop for point across points
-            do (let* ((coords (rst.devices.mocap:vicon/marker-point-position point))
-                      (name (rst.devices.mocap:vicon/marker-point-name point))
-                      (channel (vicon-haptic-channel name)))
-                 (with-json-value (name)
-                   (with-json-object ()
-                     (pair "X" (the double-float (rst.math:vec3ddouble-x coords)))
-                     (pair "Y" (the double-float (rst.math:vec3ddouble-y coords)))
-                     (pair "Z" (the double-float (rst.math:vec3ddouble-z coords)))
-                     (when channel
-                       (pair "color" (rgb-hex (hue-rgb (intensity-hue 0 #+no (aref channels channel)))))))))))))
+	(loop for point across points
+	   do (let* ((coords (rst.devices.mocap:vicon/marker-point-position point))
+		     (name (rst.devices.mocap:vicon/marker-point-name point))
+		     (channel (vicon-haptic-channel name)))
+		(with-json-value (name)
+		  (with-json-object ()
+		    (pair "X" (the double-float (rst.math:vec3ddouble-x coords)))
+		    (pair "Y" (the double-float (rst.math:vec3ddouble-y coords)))
+		    (pair "Z" (the double-float (rst.math:vec3ddouble-z coords)))
+		    (when channel
+		      (pair "color" (rgb-hex (hue-rgb (intensity-hue 0 #+no (aref channels channel))))))))))))))
