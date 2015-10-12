@@ -44,7 +44,7 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
              (or
               (when (uiop:directory-exists-p (merge-pathnames "visualizers/"))
                 *default-pathname-defaults*)
-              (uiop:directory-exists-p (asdf:system-source-directory :rsbag-renderer))
+              ;(uiop:directory-exists-p (asdf:system-source-directory :rsbag-renderer))
               (restart-case (error "Unable to discover self!")
                 (set-root (root)
                   :interactive read

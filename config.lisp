@@ -5,11 +5,9 @@ Author: Nicolas Hafner <shinmera@tymoon.eu>
 
 (in-package #:rsbag-renderer)
 
-(setf *root* #P"~/hapticexp/resources/hafner/rsbag-renderer/")
-
 (defun start ()
   (start-listener 8080)
-  (dolist (file (uiop:directory-files (root-pathname "tide/") "*.tide"))
+  (dolist (file (uiop:command-line-arguments))
     (open-source :file file))
   (dolist (file (uiop:directory-files (root-pathname "visualizers/") "*.js"))
     (load-visualizer file)))
